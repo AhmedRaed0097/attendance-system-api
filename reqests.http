@@ -1,0 +1,123 @@
+# ===========================   Generate QR code  ==================
+###
+// Get Lecture By Id
+GET http://10.5.14.169:2022/api/addStudentForAttendance/2/10 HTTP/1.1
+# GET http://localhost:8000/api/addStudentForAttendance/1/6 HTTP/1.1
+
+
+    # Lecturer use this route to maunal attendance
+    # He padd lecture id and week number
+###
+GET http://10.5.14.169:2022/api/showStuForMenualAttend/1/5 HTTP/1.1
+
+
+=====================================================================
+###
+POST http://192.168.55.127:2022/api/addstudent
+content-type: application/json
+
+{
+    "student_name": "Ahmed Omer",
+    "level": 1,
+    "batch_type": "General",
+    "major": "IT",
+    "state": 0,
+}
+###
+// Get Lecture By Id
+GET http://localhost:8000/api/lecture/6 HTTP/1.1
+# Accept : application/json
+# Authorization: Bearer 7|xNEikJAAcxJRfwGROWM9iw7ucly7tmBnlxKqHg96
+
+
+=============   Get All Lecturer Lectures ========
+###
+GET http://localhost:8000/api/lecturer/9/lectures
+
+###
+GET http://localhost:8000/api/time-table/1
+
+###
+
+GET http://localhost:8000/api/master-table/1/lectures
+
+###
+GET http://localhost:8000/api/user/1
+
+# ==========================================
+###
+GET http://10.5.14.169:2022/api/account/3/consumer
+###
+GET http://localhost:8000/api/account/3/consumer
+Accept : application/json
+
+
+
+###
+GET http://10.5.14.169:2022/api/getstudents
+Accept : application/json
+###
+GET http://10.5.14.169:2022/api/getLecturesForStudent/1
+Accept : application/json
+
+
+###
+GET http://localhost:8000/api/getLecturesForStudent/1
+Accept : application/json
+
+# ================================================
+
+# =========================================================
+###
+// TODO : Student Attendance | pass => studentId/lectureId/weekNo
+PUT http://10.5.14.169:2022/api/studentManualAttendance/4/2/10
+# PUT http://localhost:8000/api/attendance/9/1
+
+
+# =========================================================
+# =========================================================
+###
+// TODO : Student Attendance | pass => studentId/lectureId/weekNo
+PUT http://10.5.14.169:2022/api/studentScanAttendance/1/1/5
+# PUT http://localhost:8000/api/attendance/9/1
+
+
+# =========================================================
+###
+// TODO: Student show attendance Schedual for all lectures
+GET http://10.5.14.169:2021/api/checkAttendanceForAll/7
+# GET http://localhost:8000/api/checkAttendanceForAll/7
+
+
+# =========================================================
+###
+// TODO: Student show attendance Schedual for one lecture
+//       Pass his id and lecture id
+# GET http://localhost:8000/api/checkAttendanceForOne/1/1
+GET http://10.5.14.169:2022/api/checkAttendanceForOne/1/1
+
+# ==========================================================
+// Add new lecture
+###
+
+
+POST  http://localhost:8000/api/addlecture  HTTP/1.1
+content-type: application/json
+{
+    "subject_id": "4",
+    "period_id" : "4",
+    "lecture_id": "4",
+    "master_table_id": "1",
+}
+
+
+# ===========================================================
+###
+GET http://localhost:8000/api/logout
+Accept : application/json
+Authorization: Bearer 7|xNEikJAAcxJRfwGROWM9iw7ucly7tmBnlxKqHg96
+
+###
+GET http://192.168.55.166:2022/api/batchAttendance/2
+###
+GET http://10.5.2.200:2022/api/batchAttendance/2
