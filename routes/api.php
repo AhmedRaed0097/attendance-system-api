@@ -79,11 +79,13 @@ Route::get('attendance-table', [AttendanceController::class, 'getAttendanceTable
 // ==================================================================
 
 // ===================== Student Scan Attendance  =========================
-Route::put('studentScanAttendance/{student_id}/{lecture_id}/{week_no}', [AttendanceController::class, 'studentScanAttendance']);
+    //put
+Route::post('studentScanAttendance/{student_id}/{lecture_id}/{week_no}', [AttendanceController::class, 'studentScanAttendance']);
 // ===================================================================
 
 // ===================== StudentManual Attendance  =========================
-Route::put('studentManualAttendance/{student_id}/{lecture_id}/{week_no}', [AttendanceController::class, 'studentManualAttendance']);
+    //put
+Route::post('studentManualAttendance/{student_id}/{lecture_id}/{week_no}', [AttendanceController::class, 'studentManualAttendance']);
 // ===================================================================
 
 
