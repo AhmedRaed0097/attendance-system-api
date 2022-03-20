@@ -128,10 +128,21 @@ Route::get('account/{id}/consumer', function ($id) {
 Route::post('addlecture', [AttendanceController::class, 'addNewLecture']);
 
 // ==================================================================
+// =====================   Add new Lecture  ========================
+
+Route::post('deletelecture/{lecture_id}', [AttendanceController::class, 'deleteLecture']);
+
+// ==================================================================
 
 // =====================   Add new LectureR  ========================
 
 Route::post('addlecturer', [AttendanceController::class, 'addNewLecturer']);
+
+// ==================================================================
+
+// =====================   Add new LectureR  ========================
+
+Route::post('deletelecturer/{lecturer_id}', [AttendanceController::class, 'deleteLecturer']);
 
 // ==================================================================
 
@@ -144,6 +155,11 @@ Route::post('addstudent', [AttendanceController::class, 'addstudent']);
 // =====================   Add new Table  ========================
 
 Route::post('addtable', [AttendanceController::class, 'addTable']);
+
+// ==================================================================
+// =====================   Add new Table  ========================
+
+Route::post('deletetable/{table_id}', [AttendanceController::class, 'deleteTable']);
 
 // ==================================================================
 

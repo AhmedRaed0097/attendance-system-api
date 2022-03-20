@@ -9,6 +9,7 @@ use App\Models\MasterTable;
 use App\Models\Student;
 use App\Models\Attendance;
 use App\Models\Subject;
+use App\Models\Period;
 
 class AttendanceController extends Controller
 {
@@ -94,29 +95,29 @@ class AttendanceController extends Controller
 
         $attendRecords = Attendance::all()->where('lecture_id', $lecture_id)->where('week_no', $week_no);
         array_push($attendance_data_list, [
-          
-                'attendance_date' => $attendRecords->first()->created_at,
-                'lecture_id' => $attendRecords->first()->lecture->id,
-                'subject_name' => $attendRecords->first()->lecture->subject->subject_name,
-                'week_no' => $attendRecords->first()->week_no
-        
+
+            'attendance_date' => $attendRecords->first()->created_at,
+            'lecture_id' => $attendRecords->first()->lecture->id,
+            'subject_name' => $attendRecords->first()->lecture->subject->subject_name,
+            'week_no' => $attendRecords->first()->week_no
+
         ]);
         foreach ($attendRecords as $record) {
             array_push($student_data_list, [
 
-            
-                    "id" => $record->student->id,
-                    "student_name" => $record->student->student_name,
-                    "major" => $record->student->masterTable->major,
-                    "level" => $record->student->masterTable->level,
-                    "batch_type" => $record->student->masterTable->batch_type,
-                    'state' => $record->state
 
-                
+                "id" => $record->student->id,
+                "student_name" => $record->student->student_name,
+                "major" => $record->student->masterTable->major,
+                "level" => $record->student->masterTable->level,
+                "batch_type" => $record->student->masterTable->batch_type,
+                'state' => $record->state
+
+
             ]);
         }
-        $data['attendance_data']=$attendance_data_list[0];
-        $data['students_data']=$student_data_list;
+        $data['attendance_data'] = $attendance_data_list[0];
+        $data['students_data'] = $student_data_list;
         return response()->json([
             'message' => 'تم جلب البيانات بنجاح',
             'status_code' => 200,
@@ -297,37 +298,36 @@ class AttendanceController extends Controller
     }
     public function getAttendanceTableForStudent(Request $request)
     {
-        $result=[];
+        $result = [];
         // $attend = Attendance::all()->where('student_id', $student_id)->where('lecture_id', $lecture_id)->where('week_no', $week_no)->first()->update(['state' => 1]);
         // $attend = Attendance::first()->where('student_id', $student_id)->get();
-        if($request->lecture_id == null){
+        if ($request->lecture_id == null) {
             $attend = Attendance::first()->where('student_id', $request->student_id)->get();
-
-        }else{
+        } else {
             $attend = Attendance::first()->where('student_id', $request->student_id)->where('lecture_id', $request->lecture_id)->get();
         }
-        if($attend->count() >0){
+        if ($attend->count() > 0) {
             foreach ($attend as $att) {
-                
-                $result['id']=$att->id;
-            $result['subject_name']=$att->student->student_name;
-            $result['day']=$att->lecture->period->day;
-            $result['from']=$att->lecture->period->from;
-            $result['to']=$att->lecture->period->to;
-            $result['week_no']=$att->week_no;
-            $result['state']=$att->state;
+
+                $result['id'] = $att->id;
+                $result['subject_name'] = $att->student->student_name;
+                $result['day'] = $att->lecture->period->day;
+                $result['from'] = $att->lecture->period->from;
+                $result['to'] = $att->lecture->period->to;
+                $result['week_no'] = $att->week_no;
+                $result['state'] = $att->state;
             }
-        return response()->json([
-            'message' => 'تم جلب البيانات بنجاح',
-            'status_code' => 200,
-            'data' => [$result],
-        ]);
-    }else{
-        return response()->json([
-            'message' => 'لايوجد بيانات تحضير لهذه المحاضرة',
-            'status_code' => 200,
-        ]);
-    }
+            return response()->json([
+                'message' => 'تم جلب البيانات بنجاح',
+                'status_code' => 200,
+                'data' => [$result],
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'لايوجد بيانات تحضير لهذه المحاضرة',
+                'status_code' => 200,
+            ]);
+        }
     }
 
     public function addLecture()
@@ -343,6 +343,24 @@ class AttendanceController extends Controller
             'status_code' => 201
         ]);
     }
+    public function deleteLecture($lecture_id)
+    {
+        // Send on body => [  Subject_name  ]
+
+        $data = Lecture::where('id', $lecture_id)->delete();
+
+        if ($data == 1) {
+            return response()->json([
+                'message' => 'The lecture has been successfully deleted',
+                'status_code' => 200
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'This record not found',
+                'status_code' => 404
+            ]);
+        }
+    }
 
     public function addLecturer()
     {
@@ -355,6 +373,24 @@ class AttendanceController extends Controller
             'message' => 'The lecturer has been successfully added',
             'status_code' => 201
         ]);
+    }
+    public function deleteLecturer($lecturer_id)
+    {
+        // Send on body => [  Subject_name  ]
+
+        $data = Lecturer::where('id', $lecturer_id)->delete();
+
+        if ($data == 1) {
+            return response()->json([
+                'message' => 'The lecturer has been successfully deleted',
+                'status_code' => 200
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'This record not found',
+                'status_code' => 404
+            ]);
+        }
     }
 
     public function addSubject()
@@ -369,6 +405,24 @@ class AttendanceController extends Controller
             'message' => 'The subject has been successfully added',
             'status_code' => 201
         ]);
+    }
+    public function deleteSubject($subject_id)
+    {
+        // Send on body => [  Subject_name  ]
+
+        $data = Subject::where('id', $subject_id)->delete();
+
+        if ($data == 1) {
+            return response()->json([
+                'message' => 'The subject has been successfully deleted',
+                'status_code' => 200
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'This record not found',
+                'status_code' => 404
+            ]);
+        }
     }
 
 
@@ -399,6 +453,25 @@ class AttendanceController extends Controller
         ]);
     }
 
+
+    public function deleteTable($table_id)
+    {
+        // Send on body => [  titile , level , major , batch_type ]
+
+        $data = MasterTable::where('id', $table_id)->delete();
+
+        if ($data == 1) {
+            return response()->json([
+                'message' => 'The table has been successfully deleted',
+                'status_code' => 200
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'This record not found',
+                'status_code' => 404
+            ]);
+        }
+    }
     // For Lecturer Lectures Dropdown
     public function getLecturerLectures($lecturer_id)
     {
@@ -415,12 +488,11 @@ class AttendanceController extends Controller
                 "to" => $lecture->period->to
                 // "lecturer_name" => $lecture->lecturer->lecturer_name,
             ];
-            if($att == null){
+            if ($att == null) {
 
-            $rr["Lecture" . $lecture->id]['last_week']=  null;
-            }
-            else{
-            $rr["Lecture" . $lecture->id]['last_week']=  $att->week_no;
+                $rr["Lecture" . $lecture->id]['last_week'] =  null;
+            } else {
+                $rr["Lecture" . $lecture->id]['last_week'] =  $att->week_no;
             }
             array_push($lecturerLectureList, $rr["Lecture" . $lecture->id]);
         }
@@ -428,7 +500,7 @@ class AttendanceController extends Controller
 
         // return $lecturerLectureList;
         return response()->json([
-            'data'=>$lecturerLectureList
+            'data' => $lecturerLectureList
         ]);
         // 'Row List' => $lectures_list,
 
@@ -467,9 +539,9 @@ class AttendanceController extends Controller
     }
     public function getLecturesForStudentTest($student_id)
     {
-        
+
         $student_data = Student::find($student_id);
-        
+
         $studentLectureList = [];
         // $tables_list = MasterTable::first()->where('level', $student_data->level)->where('major', $student_data->major)->where('batch_type', $student_data->batch_type)->get();
         // $tables_list = MasterTable::first()->where('id', $student_data->master_table_id)->get();
@@ -492,9 +564,9 @@ class AttendanceController extends Controller
             );
         }
 
-         return response()->json([
-             'message'=>'تم جلب البيانات بنجاح',
-             'status_code'=> 200,
+        return response()->json([
+            'message' => 'تم جلب البيانات بنجاح',
+            'status_code' => 200,
             'data' => $studentLectureList
         ]);
         // return $studentLectureList;
@@ -589,10 +661,10 @@ class AttendanceController extends Controller
 
     }
 
-// ==================================  DASHBOARD  =================================
+    // ==================================  DASHBOARD  =================================
 
 
-public function getAllStudentsDashboard()
+    public function getAllStudentsDashboard()
     {
         $result = [];
         $students = Student::all();
@@ -646,7 +718,7 @@ public function getAllStudentsDashboard()
             'state' => $request->state,
         ]);
         $student->save();
-        
+
         return response()->json([
             'student_data' => $student,
             'message' => 'The student has been successfully updated',
@@ -660,7 +732,7 @@ public function getAllStudentsDashboard()
         $subjectResult = [];
         $lecturerResult = [];
 
-        
+
 
         $tables = MasterTable::all();
         foreach ($tables as $table) {
@@ -696,7 +768,7 @@ public function getAllStudentsDashboard()
     public function addPeriod(Request $request)
     {
         $period = Period::where('day', $request->day)->where('from', $request->from)->where('to', $request->to)->first();
-        if(!$period){
+        if (!$period) {
             $data = request()->all();
             $period = Period::create($data);
             return response()->json([
@@ -704,46 +776,61 @@ public function getAllStudentsDashboard()
                 'message' => 'The period has been successfully added',
                 'status_code' => 201
             ]);
-        } else{
+        } else {
             return response()->json([
                 'period_data' => $period,
                 'message' => 'The period already Exist',
                 'status_code' => 201
             ]);
+        }
+    }
+    public function deletePeriod($period_id)
+    {
+        // Send on body => [  Subject_name  ]
 
+        $data = Period::where('id', $period_id)->delete();
+
+        if ($data == 1) {
+            return response()->json([
+                'message' => 'The period has been successfully deleted',
+                'status_code' => 200
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'This record not found',
+                'status_code' => 404
+            ]);
         }
     }
 
     public function addLectureDashboard(Request $request)
     {
-         
+
         $lectureExist = Lecture::where('master_table_id', $request->master_table_id)->where('period_id', $request->period_id)->where('lecturer_id', $request->lecturer_id)->where('subject_id', $request->subject_id)->first();
-        if(!$lectureExist){
+        if (!$lectureExist) {
             $lectureSameTime = Lecture::where('master_table_id', $request->master_table_id)->where('period_id', $request->period_id)->first();
-            if(!$lectureSameTime){
+            if (!$lectureSameTime) {
                 $lecturerTime = Lecture::where('lecturer_id', $request->lecturer_id)->where('period_id', $request->period_id)->first();
-                if(!$lecturerTime){
+                if (!$lecturerTime) {
                     $data = request()->all();
                     $lecture = Lecture::create($data);
                     return response()->json([
                         'message' => 'The lecture was added successfuly',
                     ]);
-                }else{
+                } else {
                     return response()->json([
                         'message' => 'The lecturer has lecture at same time in another class',
                     ]);
                 }
-            }else{
+            } else {
                 return response()->json([
                     'message' => 'The class has lecture at same time',
                 ]);
             }
-
-        } else{
+        } else {
             return response()->json([
                 'message' => 'The lecture already exist',
             ]);
-
         }
     }
 
@@ -768,23 +855,23 @@ public function getAllStudentsDashboard()
 
     public function getMasterTableLectures($table_id)
     {
-        $lectures = Lecture::where('master_table_id',$table_id)->get();
-        $result=[];
+        $lectures = Lecture::where('master_table_id', $table_id)->get();
+        $result = [];
         foreach ($lectures as $lecture) {
-            array_push($result,[
-                'id'=>$lecture->id,
-                'subject_id'=>$lecture->subject->id,
-                'subject_name'=>$lecture->subject->subject_name,
-                'lecturer_id'=>$lecture->lecturer->id,
-                'lecturer_name'=>$lecture->lecturer->lecturer_name,
-                'period_id'=>$lecture->period->id,
-                'day'=>$lecture->period->day,
-                'from'=>$lecture->period->from,
-                'to'=>$lecture->period->to,
+            array_push($result, [
+                'id' => $lecture->id,
+                'subject_id' => $lecture->subject->id,
+                'subject_name' => $lecture->subject->subject_name,
+                'lecturer_id' => $lecture->lecturer->id,
+                'lecturer_name' => $lecture->lecturer->lecturer_name,
+                'period_id' => $lecture->period->id,
+                'day' => $lecture->period->day,
+                'from' => $lecture->period->from,
+                'to' => $lecture->period->to,
             ]);
         };
         return response()->json([
-            'lectures'=>$result
+            'lectures' => $result
         ]);
     }
 
@@ -792,7 +879,7 @@ public function getAllStudentsDashboard()
     {
         $data = request()->all();
         $lecturer =  Lecturer::create($data);
-        
+
         return response()->json([
             'lecturer_data' => $lecturer,
             'message' => 'The lecturer has been successfully added',
@@ -804,7 +891,7 @@ public function getAllStudentsDashboard()
     {
         $data = request()->all();
         $subject =  Subject::create($data);
-        
+
         return response()->json([
             'subject_data' => $subject,
             'message' => 'The subject has been successfully added',
