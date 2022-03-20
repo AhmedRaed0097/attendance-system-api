@@ -11,6 +11,14 @@ class MasterTable extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        //        'name',
+        'title',
+        'major',
+        'level',
+        'batch_type',
+    ];
+
     protected $hidden = [
         'created_at',
         'updated_at'
