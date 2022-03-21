@@ -54,13 +54,13 @@ Route::get('checkAttendanceForOne/{student_id}/{lecture_id}', [AttendanceControl
 
 // =====================   Generate QR code   ========================
 
-Route::post('addStudentForAttendance/{lecture_id}/{week_no}', [AttendanceController::class, 'addStudentForAttendance']);
+Route::post('generate-qr/{lecture_id}/{week_no}', [AttendanceController::class, 'addStudentForAttendance']);
 
 
 
 // ===================== Get Student For Manual Attendance   =========================
 
-Route::get('showStuForMenualAttend/{lecture_id}/{week_no}', [AttendanceController::class, 'showStuForMenualAttend']);
+Route::get('students-list-manual-attendance/{lecture_id}/{week_no}', [AttendanceController::class, 'showStuForMenualAttend']);
 
 // ==================================================================
 
@@ -85,7 +85,7 @@ Route::post('studentScanAttendance/{student_id}/{lecture_id}/{week_no}', [Attend
 
 // ===================== StudentManual Attendance  =========================
     //put
-Route::post('studentManualAttendance/{student_id}/{lecture_id}/{week_no}', [AttendanceController::class, 'studentManualAttendance']);
+Route::post('student-attend/{student_id}/{lecture_id}/{week_no}', [AttendanceController::class, 'studentManualAttendance']);
 // ===================================================================
 
 
@@ -125,47 +125,53 @@ Route::get('account/{id}/consumer', function ($id) {
 
 // =====================   Add new Lecture  ========================
 
-Route::post('addlecture', [AttendanceController::class, 'addNewLecture']);
+Route::post('add-lecture', [AttendanceController::class, 'addNewLecture']);
 
 // ==================================================================
 // =====================   Add new Lecture  ========================
 
-Route::post('deletelecture/{lecture_id}', [AttendanceController::class, 'deleteLecture']);
+Route::delete('delete-lecture/{lecture_id}', [AttendanceController::class, 'deleteLecture']);
 
 // ==================================================================
 
 // =====================   Add new LectureR  ========================
 
-Route::post('addlecturer', [AttendanceController::class, 'addNewLecturer']);
+Route::post('add-lecturer', [AttendanceController::class, 'addNewLecturer']);
 
 // ==================================================================
 
 // =====================   Add new LectureR  ========================
 
-Route::post('deletelecturer/{lecturer_id}', [AttendanceController::class, 'deleteLecturer']);
+Route::delete('delete-lecturer/{lecturer_id}', [AttendanceController::class, 'deleteLecturer']);
 
 // ==================================================================
 
 // =====================   Add new Student  ========================
 
-Route::post('addstudent', [AttendanceController::class, 'addstudent']);
+Route::post('add-student', [AttendanceController::class, 'addstudent']);
 
 // ==================================================================
 
 // =====================   Add new Table  ========================
 
-Route::post('addtable', [AttendanceController::class, 'addTable']);
-
-// ==================================================================
-// =====================   Add new Table  ========================
-
-Route::post('deletetable/{table_id}', [AttendanceController::class, 'deleteTable']);
+Route::post('add-table', [AttendanceController::class, 'addTable']);
 
 // ==================================================================
 
 // =====================   Add new Table  ========================
 
-Route::post('addsubject', [AttendanceController::class, 'addSubject']);
+Route::post('update-table', [AttendanceController::class, 'updateTable']);
+
+// ==================================================================
+// =====================   Add new Table  ========================
+
+Route::delete('delete-table/{table_id}', [AttendanceController::class, 'deleteTable']);
+
+// ==================================================================
+
+// =====================   Add new Table  ========================
+
+Route::post('add-subject', [AttendanceController::class, 'addSubject']);
 
 // ==================================================================
 // =====================   Get All Lecturer Lectures  ========================
@@ -215,32 +221,32 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 // =====================================   DASHBOARD  =================================
 
-Route::get('getStudents', [AttendanceController::class, 'getAllStudents']);
+Route::get('get-students', [AttendanceController::class, 'getAllStudents']);
 
-Route::get('getTables', [AttendanceController::class, 'getTables']);
+Route::get('get-tables', [AttendanceController::class, 'getTables']);
 
-Route::post('addStudent', [AttendanceController::class, 'addStudent']);
+Route::post('add-student', [AttendanceController::class, 'addStudent']);
 
-Route::post('updateStudent', [AttendanceController::class, 'updateStudent']);
+Route::post('update-Student', [AttendanceController::class, 'updateStudent']);
 
-Route::get('getLectureData', [AttendanceController::class, 'getLectureData']);
+Route::get('get-lectureData', [AttendanceController::class, 'getLectureData']);
 
-Route::post('addlecture', [AttendanceController::class, 'addLecture']);
+Route::post('add-lecture', [AttendanceController::class, 'addLecture']);
 
-Route::post('addPeriod', [AttendanceController::class, 'addPeriod']);
+Route::post('add-period', [AttendanceController::class, 'addPeriod']);
 
-Route::post('updateLecture', [AttendanceController::class, 'updateLecture']);
+Route::post('update-lecture', [AttendanceController::class, 'updateLecture']);
 
-Route::get('masterTableLecture/{table_id}', [AttendanceController::class, 'getMasterTableLectures']);
+Route::get('table-lectures/{table_id}', [AttendanceController::class, 'getMasterTableLectures']);
 
-Route::post('addLecturer', [AttendanceController::class, 'addLecturer']);
+Route::post('add-lecturer', [AttendanceController::class, 'addLecturer']);
 
-Route::post('addSubject', [AttendanceController::class, 'addSubject']);
+Route::post('add-subject', [AttendanceController::class, 'addSubject']);
 
-Route::post('updateLecturer', [AttendanceController::class, 'updateLecturer']);
+Route::post('update-lecturer', [AttendanceController::class, 'updateLecturer']);
 
-Route::post('updateSubject', [AttendanceController::class, 'updateSubject']);
+Route::post('update-subject', [AttendanceController::class, 'updateSubject']);
 
-Route::get('getLecturers', [AttendanceController::class, 'getLecturers']);
+Route::get('get-lecturers', [AttendanceController::class, 'getLecturers']);
 
-Route::get('getSubjects', [AttendanceController::class, 'getSubjects']);
+Route::get('get-subjects', [AttendanceController::class, 'getSubjects']);

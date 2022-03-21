@@ -452,6 +452,31 @@ class AttendanceController extends Controller
             'status_code' => 201
         ]);
     }
+    public function updateTable(Request $request)
+    {
+        // Send on body => [  titile , level , major , batch_type ]
+
+        $input = $request->all();
+        $speakUpdate  = MasterTable::findOrFail($input['id']);
+
+        if ($speakUpdate) {
+            $speakUpdate->fill($input)->save();
+            return response()->json([
+                'message' => 'تم تحديث الجدول بنجاح',
+                'status_code' => 201
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'الجدول غير موجود',
+                'status_code' => 404
+            ]);
+        }
+
+
+        // $data = request()->all();
+        // $lecrure =  MasterTable::create($data);
+
+    }
 
 
     public function deleteTable($table_id)
@@ -690,10 +715,15 @@ class AttendanceController extends Controller
             array_push($result, [
                 'id' => $table->id,
                 'title' => $table->title,
+                'level' => $table->level,
+                'major' => $table->major,
+                'batch_type' => $table->batch_type,
             ]);
         }
         return response()->json([
-            'tables_data' => $result
+            'data' => $result,
+            'message' => 'تم جلب البيانات بنجاح',
+            'status_code' => 200
         ]);
     }
 
