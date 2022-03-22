@@ -146,7 +146,8 @@ class AttendanceController extends Controller
         $rr["table_title"] = MasterTable::find($request->id)->title;
         foreach ($lectures as $lecture) {
             $rr["Lecture" . $lecture->id] = [
-                "subject_name" => $lecture->subject->subject_name, "day" => $lecture->period->day,
+                "subject_name" => $lecture->subject->subject_name,
+                "day" => $lecture->period->day,
                 "from" => $lecture->period->from,
                 "to" => $lecture->period->to,
                 "lecturer_name" => $lecture->lecturer->lecturer_name,
@@ -465,7 +466,7 @@ class AttendanceController extends Controller
                 'message' => 'تم تحديث الجدول بنجاح',
                 'status_code' => 201
             ]);
-        }else{
+        } else {
             return response()->json([
                 'message' => 'الجدول غير موجود',
                 'status_code' => 404
@@ -943,7 +944,9 @@ class AttendanceController extends Controller
         }
 
         return response()->json([
-            'lecturer_data' => $lecturerResult,
+            'data' => $lecturerResult,
+            'message' => 'تم جلب البيانات بنجاح',
+            'status_code' => 200
         ]);
     }
 
@@ -966,7 +969,29 @@ class AttendanceController extends Controller
 
     public function updateLecturer(Request $request)
     {
-        $lecturer = Lecturer::find($request->id);
+
+
+        $lecturer  = Lecturer::findOrFail($request->id);
+
+        if ($lecturer) {
+            $lecturer->fill($request->all())->save();
+            return response()->json([
+                'message' => 'تم تحديث بيانات المحاضر بنجاح',
+                'status_code' => 201
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'المحاضر غير موجود',
+                'status_code' => 404
+            ]);
+        }
+
+
+
+
+
+
+
 
         $lecturer->update([
             'lecturer_name' => $request->lecturer_name,

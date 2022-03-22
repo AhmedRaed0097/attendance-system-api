@@ -10,7 +10,8 @@ class Lecturer extends Model
     use HasFactory;
 
     protected $fillable = [
-        'lecturer_name'
+        'lecturer_name',
+        'state'
     ];
 
     protected $hidden = [
