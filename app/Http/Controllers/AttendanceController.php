@@ -383,12 +383,12 @@ class AttendanceController extends Controller
 
         if ($data == 1) {
             return response()->json([
-                'message' => 'The lecturer has been successfully deleted',
+                'message' => 'تم حذف المحاضر بنجاح',
                 'status_code' => 200
             ]);
         } else {
             return response()->json([
-                'message' => 'This record not found',
+                'message' => 'المحاضر غير موجود',
                 'status_code' => 404
             ]);
         }
