@@ -17,16 +17,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(4)->create();
-        // \App\Models\Lecturer::factory(10)->create();
-        // \App\Models\Period::factory(10)->create();
+        \App\Models\User::factory(4)->create();
+        \App\Models\Lecturer::factory(5)->create();
+        \App\Models\Period::factory(5)->create();
 
 
 
-        // \App\Models\Subject::factory(5)->create();
-        \App\Models\Lecture::factory(10)->create();
-        // \App\Models\MasterTable::factory(5)->create();
-        // $this->call(StudentSeeder::class);
+        \App\Models\Subject::factory(5)->create();
+        \App\Models\Lecture::factory(5)->create();
+        \App\Models\MasterTable::factory(3)->create();
+        $this->call(StudentSeeder::class);
         // $this->call(AttenanceSeeder::class);
 
         // $s = ["Arabic Language", "Data mining" , "Security"];

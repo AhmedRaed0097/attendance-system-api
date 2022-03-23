@@ -12,12 +12,15 @@ class Student extends Model
         //        'name',
         'student_name',
         'major',
+        'email',
         'level',
         'batch_type',
+        'master_table_id',
         'state',
     ];
     protected $hidden = [
         'created_at',
+        'email_verified_at',
         'updated_at'
     ];
 

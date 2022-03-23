@@ -17,9 +17,8 @@ class CreateStudentsTable extends Migration
             $table->id();
             $table->string("student_name");
             $table->string("master_table_id");
-            // $table->string("major");
-            // $table->integer("level");
-            // $table->string("batch_type");
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
             $table->integer("user_id")->unique()->nullable();
             $table->boolean("state");
             $table->timestamps();

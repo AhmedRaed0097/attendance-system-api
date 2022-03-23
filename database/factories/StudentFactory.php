@@ -24,6 +24,8 @@ class StudentFactory extends Factory
         $majors = ['IT', 'CS'];
         $batchs = ['General', 'Parallel'];
         return [
+            'email' => $this->faker->unique()->safeEmail(),
+            'email_verified_at' => now(),
             'student_name' => $this->faker->name(),
             'master_table_id' => rand(1, 5),
             // 'major' => $majors[rand(0, 1)],
