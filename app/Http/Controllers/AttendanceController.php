@@ -22,7 +22,7 @@ class AttendanceController extends Controller
         foreach ($students as $student) {
             array_push($result, [
                 'id' => $student->id,
-                'value' => $student->student_name,
+                'student_name' => $student->student_name,
                 'major' => $student->major,
                 'level' => $student->level,
                 'state' => $student->state,
@@ -30,23 +30,48 @@ class AttendanceController extends Controller
             ]);
         }
         return response()->json([
-            'students_data' => $result
+            'data' => $result,
+            'message'=>'تم جلب البيانات بنجاح',
+            'status_code'=>200,
         ]);
     }
     public function updateStudent(Request $request)
     {
-        $body = $request->student_name;
-        $student = Student::find($request->id);
-        $student->update([
-            'student_name' => $request->student_name,
-            'major' => $request->major,
-            'level' => $request->level,
-            'batch_type' => $request->batch_type,
-            'state' => $request->state,
-        ]);
-        $student->save();
-        // return $student;
-        return $student;
+        $input = $request->all();
+        $speakUpdate  = Student::findOrFail($input['id']);
+
+        if ($speakUpdate) {
+            $speakUpdate->fill($input)->save();
+            return response()->json([
+                'data'=>$input,
+                'message' => 'تم تحديث الجدول بنجاح',
+                'status_code' => 201
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'الجدول غير موجود',
+                'status_code' => 404
+            ]);
+        }
+    }
+
+    public function deleteStudent($student_id)
+    {
+        // Send on body => [  Subject_name  ]
+
+        $data = Student::where('id', $student_id)->delete();
+
+        if ($data == 1) {
+            return response()->json([
+                'message' => 'تم حذف الطالب بنجاح',
+                'status_code' => 200
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'الطالب غير موجود',
+                'status_code' => 404
+            ]);
+        }
     }
 
     public function addStudentForAttendance($lecture_id, $week_no)

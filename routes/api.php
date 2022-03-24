@@ -77,7 +77,7 @@ Route::post('add-student', [AttendanceController::class, 'addStudent']);
 
 Route::post('update-Student', [AttendanceController::class, 'updateStudent']);
 
-Route::post('update-student', [AttendanceController::class, 'updateStudent']);
+Route::delete('delete-student/{studentd_id}', [AttendanceController::class, 'deleteStudent']);
 
 Route::get('getstudents', [AttendanceController::class, 'getAllStudents']);
 
