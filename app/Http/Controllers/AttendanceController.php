@@ -438,7 +438,7 @@ class AttendanceController extends Controller
 
     public function updateSubject(Request $request)
     {
-        
+
         $input = $request->all();
         $speakUpdate  = Subject::findOrFail($input['id']);
 
@@ -454,7 +454,7 @@ class AttendanceController extends Controller
                 'status_code' => 404
             ]);
         }
-    }  
+    }
 
     public function deleteSubject($subject_id)
     {
@@ -475,7 +475,7 @@ class AttendanceController extends Controller
         }
     }
 
-    
+
     public function getSubjects(Request $request)
     {
         $subjectResult = [];
@@ -768,7 +768,7 @@ class AttendanceController extends Controller
         }
     }
     public function updatePeriod(Request $request){
-        
+
         $period  = Period::findOrFail($request->id);
 
         if ($period) {
@@ -863,7 +863,7 @@ class AttendanceController extends Controller
         ]);
     }
 
-  
+
 
     public function getLecturers(Request $request)
     {
@@ -904,9 +904,9 @@ class AttendanceController extends Controller
             ]);
         }
 
-      
+
 
     }
 
-   
+
 }
