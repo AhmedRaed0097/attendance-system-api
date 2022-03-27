@@ -15,6 +15,11 @@ class Period extends Model
     //    return $this->belongsToMany(Subject::class);
     // }
 
+    protected $fillable = [
+        'day',
+        'from',
+        'to'
+    ];
     protected $hidden = [
         'created_at',
         'updated_at'

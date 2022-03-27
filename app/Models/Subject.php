@@ -11,7 +11,9 @@ use App\Models\Lecture;
 class Subject extends Model
 {
     use HasFactory;
-
+    protected $fillable = [
+        'subject_name'
+    ];
     protected $hidden = [
         'created_at',
         'updated_at'

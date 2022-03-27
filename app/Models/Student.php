@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Student extends Model
 {
     use HasFactory;
+    protected $casts = [
+        'master_table_id' => 'integer',
+    ];
     protected $fillable = [
         //        'name',
         'student_name',

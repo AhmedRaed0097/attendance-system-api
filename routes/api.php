@@ -75,7 +75,7 @@ Route::get('get-students', [AttendanceController::class, 'getAllStudents']);
 
 Route::post('add-student', [AttendanceController::class, 'addStudent']);
 
-Route::post('update-Student', [AttendanceController::class, 'updateStudent']);
+Route::post('update-student', [AttendanceController::class, 'updateStudent']);
 
 Route::delete('delete-student/{studentd_id}', [AttendanceController::class, 'deleteStudent']);
 
@@ -109,14 +109,14 @@ Route::post('update-lecture', [AttendanceController::class, 'updateLecture']);
 
 Route::delete('delete-lecture/{lecture_id}', [AttendanceController::class, 'deleteLecture']);
 
-Route::get('get-lectureData', [AttendanceController::class, 'getLectureData']);
+Route::get('get-lectures', [AttendanceController::class, 'getLectureData']);
 
 Route::get('lecture/{id}', [AttendanceController::class, 'getLectureById']);
 
 
 // ===================== Get Lectures Table For Student  =========================
 
-Route::get('getLecturesForStudent/{student_id}', [AttendanceController::class, 'getLecturesForStudentTest']);
+Route::get('getLecturesForStudent/{student_id}', [AttendanceController::class, 'getStudentLectures']);
 
 // ==============================================================================
 
@@ -130,9 +130,9 @@ Route::post('add-period', [AttendanceController::class, 'addPeriod']);
 // TODO::
 Route::post('update-period', [AttendanceController::class, 'updatePeriod']);
 
-Route::post('delete-period', [AttendanceController::class, 'deletePeriod']);
+Route::delete('delete-period/{period_id}', [AttendanceController::class, 'deletePeriod']);
 
-Route::post('get-periods', [AttendanceController::class, 'getPeriods']);
+Route::get('get-periods', [AttendanceController::class, 'getPeriods']);
 
 // =====================================   // PERIODS CRUD  =================================
 
@@ -159,6 +159,8 @@ Route::post('add-subject', [AttendanceController::class, 'addSubject']);
 Route::post('update-subject', [AttendanceController::class, 'updateSubject']);
 
 Route::get('get-subjects', [AttendanceController::class, 'getSubjects']);
+
+Route::delete('delete-subject/{subject_id}', [AttendanceController::class, 'deleteSubject']);
 
 // =====================   // SUBJECTS CRUD   ========================
 
