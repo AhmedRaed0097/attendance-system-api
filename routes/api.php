@@ -164,6 +164,18 @@ Route::delete('delete-subject/{subject_id}', [AttendanceController::class, 'dele
 
 // =====================   // SUBJECTS CRUD   ========================
 
+// =====================   *** MAJORS CRUD ***  ========================
+
+Route::post('add-major', [AttendanceController::class, 'addMajor']);
+
+Route::post('update-major', [AttendanceController::class, 'updateMajor']);
+
+Route::get('get-majors', [AttendanceController::class, 'getMajors']);
+
+Route::delete('delete-major/{major_id}', [AttendanceController::class, 'deleteMajor']);
+
+// =====================   // MAJORS CRUD   ========================
+
 
 
 

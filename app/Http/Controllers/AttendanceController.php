@@ -8,6 +8,7 @@ use App\Models\Lecturer;
 use App\Models\MasterTable;
 use App\Models\Student;
 use App\Models\Attendance;
+use App\Models\Major;
 use App\Models\Subject;
 use App\Models\Period;
 
@@ -719,10 +720,8 @@ class AttendanceController extends Controller
         ]);
     }
 
-    public function getLectureData(Request $request)
+    public function getLectureData()
     {
-        $tableResult = [];
-        $subjectResult = [];
         $lecturerResult = [];
 
         $lectures = Lecture::all();
@@ -821,6 +820,84 @@ class AttendanceController extends Controller
             ]);
         }
     }
+
+
+// ========================= Majors =========================================
+
+
+public function addMajor(Request $request)
+{
+    $major = Major::where('major', $request->major)->first();
+    if (!$major) {
+        $data = request()->all();
+        $response = Major::create($data);
+        return response()->json([
+            'data' => $response,
+            'message' => 'تم إضافة الفترة بنجاح',
+            'status_code' => 200
+        ]);
+    } else {
+        return response()->json([
+            'message' => 'الفترة موجودة مسبقاً',
+            'status_code' => 404
+        ]);
+    }
+}
+public function updateMajor(Request $request){
+
+    $major  = Major::where($request->id)->first();
+
+    if ($major) {
+        $major->fill($request->all())->save();
+        return response()->json([
+            'message' => 'تم تحديث بيانات الفترة بنجاح',
+            'status_code' => 201
+        ]);
+    } else {
+        return response()->json([
+            'message' => 'الفترة غير موجود',
+            'status_code' => 404
+        ]);
+    }
+
+}
+public function getMajors()
+{
+    $periodResult = [];
+
+    $majors = Major::all();
+    foreach ($majors as $major) {
+        array_push($periodResult, [
+            'id' => $major->id,
+            'major' => $major->major,
+            'levels' => $major->levels,
+        ]);
+    }
+
+    return response()->json([
+        'data' => $periodResult,
+        'message' => 'تم جلب البيانات بنجاح',
+        'status_code' => 200
+    ]);
+}
+public function deleteMajor($major_id)
+{
+    $data = Major::where('id', $major_id)->delete();
+
+    if ($data == 1) {
+        return response()->json([
+            'message' => 'تم حذف الفترة بنجاح',
+            'status_code' => 200
+        ]);
+    } else {
+        return response()->json([
+            'message' => 'الفترة غير موجودة',
+            'status_code' => 404
+        ]);
+    }
+}
+
+// ========================= //Majors =========================================
 
     public function updateLecture(Request $request)
     {
