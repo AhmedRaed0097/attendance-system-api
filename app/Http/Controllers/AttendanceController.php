@@ -845,7 +845,7 @@ public function addMajor(Request $request)
 }
 public function updateMajor(Request $request){
 
-    $major  = Major::where($request->id)->first();
+    $major  = Major::findOrFail($request->id);
 
     if ($major) {
         $major->fill($request->all())->save();
