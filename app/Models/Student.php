@@ -14,12 +14,9 @@ class Student extends Model
     protected $fillable = [
         //        'name',
         'student_name',
-        'major',
-        'email',
-        'level',
-        'batch_type',
         'master_table_id',
         'state',
+        'email',
     ];
     protected $hidden = [
         'created_at',

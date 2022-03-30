@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\StudentsImport;
 use Illuminate\Http\Request;
 use App\Models\Lecture;
 use App\Models\Lecturer;
@@ -11,6 +12,7 @@ use App\Models\Attendance;
 use App\Models\Major;
 use App\Models\Subject;
 use App\Models\Period;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AttendanceController extends Controller
 {
@@ -329,12 +331,10 @@ class AttendanceController extends Controller
     public function getAttendanceTableForStudent(Request $request)
     {
         $result = [];
-        // $attend = Attendance::all()->where('student_id', $student_id)->where('lecture_id', $lecture_id)->where('week_no', $week_no)->first()->update(['state' => 1]);
-        // $attend = Attendance::first()->where('student_id', $student_id)->get();
         if ($request->lecture_id == null) {
-            $attend = Attendance::first()->where('student_id', $request->student_id)->get();
+            $attend = Attendance::where('student_id', $request->student_id)->get();
         } else {
-            $attend = Attendance::first()->where('student_id', $request->student_id)->where('lecture_id', $request->lecture_id)->get();
+            $attend = Attendance::where('student_id', $request->student_id)->where('lecture_id', $request->lecture_id)->get();
         }
         if ($attend->count() > 0) {
             foreach ($attend as $att) {
@@ -496,6 +496,15 @@ class AttendanceController extends Controller
         ]);
     }
 
+
+    public function uploadStudents(Request $request){
+        Excel::import(new StudentsImport , $request->file());
+
+        return response()->json([
+            'message' => 'تم حفظ البيانات بنجاح',
+            'status_code' => 200
+        ]);
+    }
     public function addStudent()
     {
         // Send on body => [  Student_name , major , level , batch_type   ]
@@ -638,11 +647,8 @@ class AttendanceController extends Controller
         $student_data = Student::find($student_id);
 
         $studentLectureList = [];
-        // $tables_list = MasterTable::first()->where('level', $student_data->level)->where('major', $student_data->major)->where('batch_type', $student_data->batch_type)->get();
-        // $tables_list = MasterTable::first()->where('id', $student_data->master_table_id)->get();
         $lectures_data = MasterTable::find($student_data->master_table_id)->lectures;
 
-        // $lectures_list = $tables_list[0]->lectures;
         foreach ($lectures_data as $lecture) {
             array_push(
                 $studentLectureList,
@@ -662,7 +668,8 @@ class AttendanceController extends Controller
         return response()->json([
             'message' => 'تم جلب البيانات بنجاح',
             'status_code' => 200,
-            'data' => $studentLectureList
+            'data' => $student_data
+            // 'data' => $studentLectureList
         ]);
         // return $studentLectureList;
         // return $lectures_data;

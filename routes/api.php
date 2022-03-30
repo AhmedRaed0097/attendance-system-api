@@ -73,6 +73,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 Route::get('get-students', [AttendanceController::class, 'getAllStudents']);
 
+Route::post('import-students', [AttendanceController::class, 'uploadStudents']);
+
 Route::post('add-student', [AttendanceController::class, 'addStudent']);
 
 Route::post('update-student', [AttendanceController::class, 'updateStudent']);
