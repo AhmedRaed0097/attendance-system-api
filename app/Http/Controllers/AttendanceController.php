@@ -498,7 +498,15 @@ class AttendanceController extends Controller
 
 
     public function uploadStudents(Request $request){
-        Excel::import(new StudentsImport , $request->file());
+
+        //return $request->all();
+
+        if($request->has('file') && $request->has('master_table_id')) {
+            (new StudentsImport($request->master_table_id,$request->state))->import($request->file, 'local', \Maatwebsite\Excel\Excel::XLSX);
+        }
+
+
+        //Excel::import(new StudentsImport , $request->file());
 
         return response()->json([
             'message' => 'تم حفظ البيانات بنجاح',
