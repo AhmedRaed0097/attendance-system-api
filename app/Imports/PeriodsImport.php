@@ -2,22 +2,19 @@
 
 namespace App\Imports;
 
-use App\Models\Student;
+use App\Models\Period;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToArray;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class StudentsImport implements ToModel,WithHeadingRow
+class PeriodsImport implements ToModel
 {
     use Importable;
 
-    public function __construct($masterTableId, $state) {
-        $this->masterTableId = $masterTableId;
-        $this->state = $state;
+    public function __construct() {
     }
-
     /**
     * @param array $row
     *
@@ -25,12 +22,11 @@ class StudentsImport implements ToModel,WithHeadingRow
     */
     public function model(array $row)
     {
-        //dd($row);
-        return new Student([
-            'student_name'     => $row['name'],
-            'email'            => $row['email'],
-            'master_table_id'  => $this->masterTableId,
-            'state'  => $this->state,
+        return new Period([
+            'day'    => $row['day'],
+            'from'    => $row['from'],
+            'to'    => $row['to'],
+
         ]);
     }
 
@@ -38,4 +34,5 @@ class StudentsImport implements ToModel,WithHeadingRow
     {
         return 1;
     }
+}
 }

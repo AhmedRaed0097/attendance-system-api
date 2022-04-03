@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Imports\StudentsImport;
+use App\Imports\LecturersImport;
+use App\Imports\MajorsImport;
+use App\Imports\SubjectsImport;
 use Illuminate\Http\Request;
 use App\Models\Lecture;
 use App\Models\Lecturer;
@@ -391,6 +394,19 @@ class AttendanceController extends Controller
             ]);
         }
     }
+// ==================================================================
+
+public function uploadLecturers(Request $request){
+
+    if($request->has('file') && $request->has('state')) {
+        (new LecturersImport($request->state))->import($request->file, 'local', \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    return response()->json([
+        'message' => 'تم حفظ البيانات بنجاح',
+        'status_code' => 200
+    ]);
+}
 
     public function addLecturer()
     {
@@ -422,11 +438,9 @@ class AttendanceController extends Controller
             ]);
         }
     }
-
+// ========================== Subject ===================================
     public function addSubject()
     {
-        // Send on body => [  Subject_name  ]
-
         $data = request()->all();
         $subject =  Subject::create($data);
 
@@ -437,6 +451,17 @@ class AttendanceController extends Controller
         ]);
     }
 
+    
+public function uploadSubjects(Request $request){
+
+    if($request->has('file') ) {
+        Excel::import(new SubjectsImport , $request->file,'local', \Maatwebsite\Excel\Excel::XLSX);
+    }
+    return response()->json([
+        'message' => 'تم حفظ البيانات بنجاح',
+        'status_code' => 200
+    ]);
+}
     public function updateSubject(Request $request)
     {
 
@@ -839,7 +864,16 @@ class AttendanceController extends Controller
 
 // ========================= Majors =========================================
 
+public function uploadMajors(Request $request){
 
+    if($request->has('file') ) {
+        Excel::import(new MajorsImport , $request->file,'local', \Maatwebsite\Excel\Excel::XLSX);
+    }
+    return response()->json([
+        'message' => 'تم حفظ البيانات بنجاح',
+        'status_code' => 200
+    ]);
+}
 public function addMajor(Request $request)
 {
     $major = Major::where('major', $request->major)->first();

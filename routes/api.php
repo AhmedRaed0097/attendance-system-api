@@ -142,6 +142,9 @@ Route::get('get-periods', [AttendanceController::class, 'getPeriods']);
 
 Route::post('add-lecturer', [AttendanceController::class, 'addLecturer']);
 
+Route::post('import-lecturers', [AttendanceController::class, 'uploadLecturers']);
+
+
 Route::post('update-lecturer', [AttendanceController::class, 'updateLecturer']);
 
 Route::get('get-lecturers', [AttendanceController::class, 'getLecturers']);
@@ -156,6 +159,8 @@ Route::get('lecturer/{lecturer_id}/lectures', [AttendanceController::class, 'get
 
 // =====================   *** SUBJECTS CRUD ***  ========================
 
+Route::post('import-subjects', [AttendanceController::class, 'uploadSubjects']);
+
 Route::post('add-subject', [AttendanceController::class, 'addSubject']);
 
 Route::post('update-subject', [AttendanceController::class, 'updateSubject']);
@@ -167,6 +172,8 @@ Route::delete('delete-subject/{subject_id}', [AttendanceController::class, 'dele
 // =====================   // SUBJECTS CRUD   ========================
 
 // =====================   *** MAJORS CRUD ***  ========================
+
+Route::post('import-majors', [AttendanceController::class, 'uploadMajors']);
 
 Route::post('add-major', [AttendanceController::class, 'addMajor']);
 
