@@ -701,8 +701,8 @@ public function uploadSubjects(Request $request){
         return response()->json([
             'message' => 'تم جلب البيانات بنجاح',
             'status_code' => 200,
-            'data' => $student_data
-            // 'data' => $studentLectureList
+            // 'data' => $student_data
+            'data' => $studentLectureList
         ]);
         // return $studentLectureList;
         // return $lectures_data;
