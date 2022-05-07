@@ -203,6 +203,10 @@ Route::get('attendance-table', [AttendanceController::class, 'getAttendanceTable
 
 Route::post('generate-qr/{lecture_id}/{week_no}', [AttendanceController::class, 'addStudentForAttendance']);
 // =================================================================================
+// =====================   Remove Batch From Attendance   =====================================
+
+Route::post('remove-batch/{lecture_id}/{week_no}', [AttendanceController::class, 'removeBatchFormAttendance']);
+// =================================================================================
 
 // ===================== Student Scan Attendance  =================================
 //put

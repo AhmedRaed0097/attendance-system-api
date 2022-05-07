@@ -83,6 +83,32 @@ class AttendanceController extends Controller
         }
     }
 
+    public function removeBatchFormAttendance($lecture_id, $week_no)
+    {
+     
+        $data = Attendance::where('lecture_id', $lecture_id)->where('week_no', $week_no)->delete();
+
+        if ($data == 1) {
+            return response()->json([
+                'message' => 'تم حذف كشف تحضير الدفعة لهذا الأسبوع بنجاح',
+                'status_code' => 200
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'لايوجد كشف تحضير للدفعة في هذا الاسبوع',
+                'status_code' => 404
+            ]);
+        }
+
+    }
+
+    public function generateQr($lecture_id, $week_no){
+        return response()->json([
+            'message' => "تم إنشاء جدول تحضير الطلاب في هذه لهذا الأسبوع",
+            'status_code' => 200
+        ]);
+
+    }
     public function addStudentForAttendance($lecture_id, $week_no)
     {
 
@@ -105,20 +131,20 @@ class AttendanceController extends Controller
                     'week_no' => $week_no
                 ]);
             }
-
-            return response()->json([
-                'message' => "Lecture and Students are added to attendance table",
-                'status_code' => 200
-            ]);
         } else {
-
+            
             return response()->json([
-                'message' => "This batch was already add to this lecture and week!!",
+                'message' => "هناك جدول تحضير موجود مسبقا  لهذا الأسبوع",
                 'status_code' => 401
 
 
             ]);
         }
+        
+                    return response()->json([
+                        'message' => "تم إنشاء جدول تحضير الطلاب في هذه لهذا الأسبوع",
+                        'status_code' => 200
+                    ]);
     }
 
     public function showStuForMenualAttend($lecture_id, $week_no)
@@ -300,14 +326,14 @@ class AttendanceController extends Controller
             $attend[0]->save();
             return response()->json([
                 'attendance_data' => $attend,
-                'message' => 'Your attendance has been successfully registered',
+                'message' => 'تم تسجيل الحضور بنجاح',
                 'status_code' => 201
             ]);
         } else {
             return response()->json([
                 'attendance_data' => $attend,
-                'message' => 'Your are already registered',
-                'status_code' => 2010
+                'message' => 'تم تسجيل الحضور مسبقاً',
+                'status_code' => 202
             ]);
         }
     }
@@ -554,15 +580,24 @@ public function uploadSubjects(Request $request){
     public function addTable()
     {
         // Send on body => [  titile , level , major , batch_type ]
-
         $data = request()->all();
+        $check = MasterTable::where('major', request()->major)->where('level', request()->level)->where('batch_type', request()->batch_type)->get();
+        if ($check->count() <  1) {
+
         $lecture =  MasterTable::create($data);
 
         return response()->json([
             'lecture_data' => $lecture,
-            'message' => 'The table has been successfully added',
-            'status_code' => 201
+            'message' => 'تم إضافة الجدول بنجاح',
+            'status_code' => 200
         ]);
+    }else{
+        
+        return response()->json([
+            'message' => 'الجدول موجود مسبقاً',
+            'status_code' => 422
+        ]);
+    }
     }
     public function updateTable(Request $request)
     {
@@ -619,6 +654,8 @@ public function uploadSubjects(Request $request){
 
             $rr["Lecture" . $lecture->id] = [
                 "lecture_id" => $lecture->id,
+                // for dropdown menu
+                "subject_title" => $lecture->subject->subject_name .'( ' . $lecture->period->from .' - '. $lecture->period->to . ' )',
                 "subject_name" => $lecture->subject->subject_name,
                 "day" => $lecture->period->day,
                 "from" => $lecture->period->from,
