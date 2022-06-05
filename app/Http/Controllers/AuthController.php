@@ -18,22 +18,29 @@ class AuthController extends Controller
         $fields = $request->validate([
             // 'name' => 'required|string',
             'email' => 'required|string|unique:users,email',
+            'user_type' => 'required|string',
             'password' => 'required|string|confirmed',
         ]);
         $user = User::create([
             // 'name' => $fields['name'],
             'email' => $fields['email'],
+            'user_type' => $fields['user_type'],
             'email_verified_at' => now(),
             'password' => bcrypt($fields['password']),
             'remember_token' => Str::random(10),
 
         ]);
-        // $token = $user->createToken($request->device_name)->plainTextToken;
+        $token = $user->createToken('register')->plainTextToken;
         $response = [
             'user' => $user,
-            // 'token' => $token,
+            'token' => $token,
         ];
-        return response($response, 201);
+        return response()->json([
+            'data'=>$response,
+            'message' => 'تم إنشاء الحساب بنجاح'
+
+             ],201);
+        return $response;
     }
 
     public function login(Request $request)
@@ -73,8 +80,8 @@ class AuthController extends Controller
         ];
         return response()->json([
             'data' => $response,
-            'status_code' => 200
-        ]);
+            'message' => 'تم تسجيل الدخول بنجاح'
+        ],200);
     }
     public function logout(Request $request)
     {
