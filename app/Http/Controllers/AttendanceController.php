@@ -53,7 +53,7 @@ class AttendanceController extends Controller
             $speakUpdate->fill($input)->save();
             return response()->json([
                 'data'=>$input,
-                'message' => 'تم تحديث الجدول بنجاح',
+                'message' => 'تم تحديث بيانات الطالب بنجاح',
                 'status_code' => 201
             ]);
         } else {
@@ -158,6 +158,9 @@ class AttendanceController extends Controller
 
             'attendance_date' => $attendRecords->first()->created_at,
             'lecture_id' => $attendRecords->first()->lecture->id,
+            "major" => $attendRecords[0]->student->masterTable->major,
+            "level" => $attendRecords[0]->student->masterTable->level,
+            "batch_type" => $attendRecords[0]->student->masterTable->batch_type,
             'subject_name' => $attendRecords->first()->lecture->subject->subject_name,
             'week_no' => $attendRecords->first()->week_no
 
@@ -168,9 +171,6 @@ class AttendanceController extends Controller
 
                 "id" => $record->student->id,
                 "student_name" => $record->student->student_name,
-                "major" => $record->student->masterTable->major,
-                "level" => $record->student->masterTable->level,
-                "batch_type" => $record->student->masterTable->batch_type,
                 'state' => $record->state
 
 
@@ -344,16 +344,14 @@ class AttendanceController extends Controller
         if ($attend->state == 1) {
             $attend->update(['state' => 0]);
             return response()->json([
-                'attendance_data' => $attend,
-                'message' => 'Your attendance has been successfully deleted',
-                'status_code' => 201
+                'message' => 'تم حذف تسجيل الحضور بنجاح',
+                'status_code' => 200
             ]);
         } else {
             $attend->update(['state' => 1]);
             return response()->json([
-                'attendance_data' => $attend,
-                'message' => 'Your attendance has been successfully registered',
-                'status_code' => 201
+                'message' => 'تم تسجيل الحضور بنجاح',
+                'status_code' => 200
             ]);
         }
     }
@@ -368,18 +366,28 @@ class AttendanceController extends Controller
         if ($attend->count() > 0) {
             foreach ($attend as $att) {
 
-                $result['id'] = $att->id;
-                $result['subject_name'] = $att->student->student_name;
-                $result['day'] = $att->lecture->period->day;
-                $result['from'] = $att->lecture->period->from;
-                $result['to'] = $att->lecture->period->to;
-                $result['week_no'] = $att->week_no;
-                $result['state'] = $att->state;
+            array_push($result, [
+                'id'=>   $att->id  ,
+                'subject_name'=>   $att->lecture->subject->subject_name  ,
+                'day'=>  $att->lecture->period->day   ,
+                'from'=>  $att->lecture->period->from   ,
+                'to'=>  $att->lecture->period->to   ,
+                'week_no'=>  $att->week_no   ,
+                'state'=>   $att->state  ,
+            ]);
+
+                // $result['id'] = $att->id;
+                // $result['subject_name'] = $att->lecture->subject->subject_name;
+                // $result['day'] = $att->lecture->period->day;
+                // $result['from'] = $att->lecture->period->from;
+                // $result['to'] = $att->lecture->period->to;
+                // $result['week_no'] = $att->week_no;
+                // $result['state'] = $att->state;
             }
             return response()->json([
                 'message' => 'تم جلب البيانات بنجاح',
                 'status_code' => 200,
-                'data' => [$result],
+                'data' => $result,
             ]);
         } else {
             return response()->json([
@@ -497,7 +505,7 @@ public function uploadSubjects(Request $request){
         if ($speakUpdate) {
             $speakUpdate->fill($input)->save();
             return response()->json([
-                'message' => 'تم تحديث المادة بنجاح',
+                'message' => 'تم تحديث بيانات المادة بنجاح',
                 'status_code' => 201
             ]);
         } else {
@@ -609,7 +617,7 @@ public function uploadSubjects(Request $request){
         if ($speakUpdate) {
             $speakUpdate->fill($input)->save();
             return response()->json([
-                'message' => 'تم تحديث الجدول بنجاح',
+                'message' => 'تم تحديث بيانات الجدول بنجاح',
                 'status_code' => 201
             ]);
         } else {
