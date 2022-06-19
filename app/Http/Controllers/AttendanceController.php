@@ -85,12 +85,12 @@ class AttendanceController extends Controller
 
     public function removeBatchFormAttendance($lecture_id, $week_no)
     {
-     
+
         $data = Attendance::where('lecture_id', $lecture_id)->where('week_no', $week_no)->delete();
 
-        if ($data == 1) {
+        if ($data > 1) {
             return response()->json([
-                'message' => 'تم حذف كشف تحضير الدفعة لهذا الأسبوع بنجاح',
+                'message' => 'تم حذف جدول التحضير بنجاح',
                 'status_code' => 200
             ]);
         } else {
@@ -104,7 +104,7 @@ class AttendanceController extends Controller
 
     public function generateQr($lecture_id, $week_no){
         return response()->json([
-            'message' => "تم إنشاء جدول تحضير الطلاب في هذه لهذا الأسبوع",
+            'message' => "تم إنشاء جدول التحضير بنجاح",
             'status_code' => 200
         ]);
 
@@ -132,7 +132,7 @@ class AttendanceController extends Controller
                 ]);
             }
         } else {
-            
+
             return response()->json([
                 'message' => "هناك جدول تحضير موجود مسبقا  لهذا الأسبوع",
                 'status_code' => 401
@@ -140,9 +140,9 @@ class AttendanceController extends Controller
 
             ]);
         }
-        
+
                     return response()->json([
-                        'message' => "تم إنشاء جدول تحضير الطلاب في هذه لهذا الأسبوع",
+                        'message' => "تم إنشاء جدول التحضير بنجاح",
                         'status_code' => 200
                     ]);
     }
@@ -361,28 +361,19 @@ class AttendanceController extends Controller
         if ($request->lecture_id == null) {
             $attend = Attendance::where('student_id', $request->student_id)->get();
         } else {
-            $attend = Attendance::where('student_id', $request->student_id)->where('lecture_id', $request->lecture_id)->get();
+            $attend = Attendance::where('student_id', $request->student_id)->get();
         }
         if ($attend->count() > 0) {
             foreach ($attend as $att) {
-
-            array_push($result, [
-                'id'=>   $att->id  ,
-                'subject_name'=>   $att->lecture->subject->subject_name  ,
-                'day'=>  $att->lecture->period->day   ,
-                'from'=>  $att->lecture->period->from   ,
-                'to'=>  $att->lecture->period->to   ,
-                'week_no'=>  $att->week_no   ,
-                'state'=>   $att->state  ,
-            ]);
-
-                // $result['id'] = $att->id;
-                // $result['subject_name'] = $att->lecture->subject->subject_name;
-                // $result['day'] = $att->lecture->period->day;
-                // $result['from'] = $att->lecture->period->from;
-                // $result['to'] = $att->lecture->period->to;
-                // $result['week_no'] = $att->week_no;
-                // $result['state'] = $att->state;
+                array_push($result, [
+                    'id' => $att->id,
+                    'subject_name' => $att->lecture->subject->subject_name,
+                    'day' => $att->lecture->period->day,
+                    'from' => $att->lecture->period->from,
+                    'to' => $att->lecture->period->to,
+                    'week_no' => $att->week_no,
+                    'state' => $att->state
+                ]);
             }
             return response()->json([
                 'message' => 'تم جلب البيانات بنجاح',
@@ -485,7 +476,7 @@ public function uploadLecturers(Request $request){
         ]);
     }
 
-    
+
 public function uploadSubjects(Request $request){
 
     if($request->has('file') ) {
@@ -600,7 +591,7 @@ public function uploadSubjects(Request $request){
             'status_code' => 200
         ]);
     }else{
-        
+
         return response()->json([
             'message' => 'الجدول موجود مسبقاً',
             'status_code' => 422
@@ -682,7 +673,9 @@ public function uploadSubjects(Request $request){
 
         // return $lecturerLectureList;
         return response()->json([
-            'data' => $lecturerLectureList
+            'data' => $lecturerLectureList,
+            'message' => 'تم جلب البيانات بنجاح',
+            'status_code'=>200
         ]);
         // 'Row List' => $lectures_list,
 
@@ -744,10 +737,10 @@ public function uploadSubjects(Request $request){
         }
 
         return response()->json([
+            'data' => $studentLectureList,
             'message' => 'تم جلب البيانات بنجاح',
-            'status_code' => 200,
+            'status_code'=>200
             // 'data' => $student_data
-            'data' => $studentLectureList
         ]);
         // return $studentLectureList;
         // return $lectures_data;

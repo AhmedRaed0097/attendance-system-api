@@ -36,10 +36,10 @@ class AuthController extends Controller
             'token' => $token,
         ];
         return response()->json([
-            'data'=>$response,
+            'data' => $response,
             'message' => 'تم إنشاء الحساب بنجاح'
 
-             ],201);
+        ], 201);
         return $response;
     }
 
@@ -60,7 +60,7 @@ class AuthController extends Controller
 
         $token = $user->createToken($request->device_name)->plainTextToken;
         if ($user->user_type == "student") {
-        $student = Student::where('user_id', $user->id)->first();
+            $student = Student::where('user_id', $user->id)->first();
 
             $user['student_id'] = $student->id;
             $user['student_name'] = $student->student_name;
@@ -68,10 +68,10 @@ class AuthController extends Controller
             // $state= $user->student->student_name;
             // $user['state'] =$state;
         } else if ($user->user_type == "lecturer") {
-        $lecturer = Lecturer::where('user_id', $user->id)->first();
+            $lecturer = Lecturer::where('user_id', $user->id)->first();
 
-        $user['lecturer_id'] = $lecturer->id;
-        $user['lecturer_name'] = $lecturer->lecturer_name;
+            $user['lecturer_id'] = $lecturer->id;
+            $user['lecturer_name'] = $lecturer->lecturer_name;
         }
 
         $response = [
@@ -81,8 +81,30 @@ class AuthController extends Controller
         return response()->json([
             'data' => $response,
             'message' => 'تم تسجيل الدخول بنجاح'
-        ],200);
+        ], 200);
     }
+    public function getUser(Request $request)
+    {
+        $user = $request->user();
+        if ($user->user_type === "student") {
+            $student = Student::where('user_id', $user->id)->first();
+            $user['name'] = $student->student_name;
+            $user['major'] = $student->masterTable->major;
+            $user['level'] = $student->masterTable->level;
+            $user['batch_type'] = $student->masterTable->batch_type;
+        } else if ($user->user_type === "lecturer") {
+            $lecturer = Lecturer::where('user_id', $user->id)->first();
+            $user['name'] = $lecturer->lecturer_name;
+        }
+        $response = [
+            'user' => $user,
+        ];
+        return response()->json([
+            'data' => $response,
+            'message' => 'تم جلب بيانات المستخدم بنجاح'
+        ]);
+    }
+
     public function logout(Request $request)
     {
         $user = $request->user();
