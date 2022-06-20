@@ -1,14 +1,11 @@
 <?php
 
 use App\Http\Controllers\AttendanceController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\LecturerController;
 use Illuminate\Support\Facades\Route;
-use App\Models\Subject;
-use App\Models\Lecture;
-use App\Models\MasterTable;
 use App\Models\User;
 use App\Http\Controllers\AuthController;
-use Illuminate\Routing\RouteGroup;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +17,6 @@ use Illuminate\Routing\RouteGroup;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
 
 // =====================   Report   ========================
 
@@ -63,6 +59,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 // ===============================================================
 
+//    |||||||||||||| =====================   ADMIN OPERATIONS   ========================  ||||||||||||||
 
 // ===================================== *** STUDENTS CRUD ***  =================================
 
@@ -111,13 +108,6 @@ Route::get('get-lectures', [AttendanceController::class, 'getLectureData']);
 Route::get('lecture/{id}', [AttendanceController::class, 'getLectureById']);
 
 
-// ===================== Get Lectures Table For Student  =========================
-
-Route::get('getLecturesForStudent/{student_id}', [AttendanceController::class, 'getStudentLectures']);
-
-// ==============================================================================
-
-
 // =====================================   // LECTURES CRUD  =================================
 
 // =====================================  *** PERIODS CRUD *** ================================
@@ -145,11 +135,6 @@ Route::post('update-lecturer', [AttendanceController::class, 'updateLecturer']);
 Route::get('get-lecturers', [AttendanceController::class, 'getLecturers']);
 
 Route::delete('delete-lecturer/{lecturer_id}', [AttendanceController::class, 'deleteLecturer']);
-
-Route::get('lecturer/{lecturer_id}/lectures', [AttendanceController::class, 'getLecturerLectures']);
-
-
-// =====================================   // LECTURERS CRUD  =================================
 
 
 // =====================   *** SUBJECTS CRUD ***  ========================
@@ -180,52 +165,132 @@ Route::delete('delete-major/{major_id}', [AttendanceController::class, 'deleteMa
 
 // =====================   // MAJORS CRUD   ========================
 
-
-
-
-
 // =====================   *** ATTENDANCE CRUD ***   ========================
+
+
+// =====================   Remove Batch From Attendance   =====================================
+
+Route::post('remove-batch/{lecture_id}/{week_no}', [LectureController::class, 'removeBatchFormAttendance']);
+// =================================================================================
+
+
+//    |||||||||||||| =====================   // ADMIN OPERATIONS   ========================  ||||||||||||||
+
+
+// Route::get('checkAttendanceForOne/{student_id}/{lecture_id}', [AttendanceController::class, 'checkStateOfOneLecture']);
+
+
+// =====================   // ATTENDANCE CRUD   ========================
+
+
+
+// ====================================================================================================================================================
+
+
+
+//    |||||||||||||| =====================    STUDENT OPERATIONS   ========================  ||||||||||||||
+
+// ===================== Student Login  =================================
+
+Route::post('student/login', [StudentController::class, 'login']);
+
+// ================================================================================
+// ===================== Student Login  =================================
+
+Route::middleware('auth:students')->post('student/logout', [StudentController::class, 'logout']);
+
+// ================================================================================
+
+// ===================== Get Student  =================================
+
+
+Route::get('student/user',[StudentController::class, 'getUser']);
+// ================================================================================
+
+
+// ===================== Set student password fpr first time  =================================
+
+Route::post('student/set-password',[StudentController::class, 'setPasword']);
+
+// ================================================================================
+
+
+// ===================== Student Scan Attendance  =================================
+//put
+Route::post('studentScanAttendance/{student_id}/{lecture_id}/{week_no}', [StudentController::class, 'studentScanAttendance']);
+// =================================================================================
+
 
 
 // ===================== Get Attendance Table For Student  =========================
 
-Route::get('attendance-table', [AttendanceController::class, 'getAttendanceTableForStudent']);
+Route::get('attendance-table', [StudentController::class, 'getAttendanceTableForStudent']);
 
 // =================================================================================
 
+// ===================== Get Lectures Table For Student  =========================
 
-// =====================   Generate QR code   =====================================
+Route::get('getLecturesForStudent/{student_id}', [StudentController::class, 'getStudentLectures']);
 
-Route::post('generate-qr/{lecture_id}/{week_no}', [AttendanceController::class, 'addStudentForAttendance']);
-// =================================================================================
-// =====================   Remove Batch From Attendance   =====================================
+// ==============================================================================
 
-Route::post('remove-batch/{lecture_id}/{week_no}', [AttendanceController::class, 'removeBatchFormAttendance']);
-// =================================================================================
 
-// ===================== Student Scan Attendance  =================================
-//put
-Route::post('studentScanAttendance/{student_id}/{lecture_id}/{week_no}', [AttendanceController::class, 'studentScanAttendance']);
-// =================================================================================
+//    |||||||||||||| =====================   // STUDENT OPERATIONS   ========================  ||||||||||||||
 
 
 
-// ===================== Get Student For Manual Attendance   =========================
 
-Route::get('students-list-manual-attendance/{lecture_id}/{week_no}', [AttendanceController::class, 'showStuForMenualAttend']);
-// =================================================================================
+//    |||||||||||||| =====================    LECTURER OPERATIONS   ========================  ||||||||||||||
+
+
+
+
+
+// ===================== Lecturer Login  =================================
+
+Route::post('lecturer/login', [LecturerController::class, 'login']);
+
+// ================================================================================
+
+// ===================== Get Student  =================================
+
+
+Route::middleware('auth:students')->get('lecturer/user',[StudentController::class, 'getUser']);
+// ================================================================================
+
+
+
+
+
+
+
+
+
+// =====================================   /GET LECTURER LECTURES  =================================
+
+Route::get('lecturer/{lecturer_id}/lectures', [LecturerController::class, 'getLecturerLectures']);
+
+// =================================================================================================
+
+
+// =====================   Generate QR code   ========================================================
+
+Route::post('generate-qr/{lecture_id}/{week_no}', [LecturerController::class, 'addStudentForAttendance']);
+
+// =======================================================================================================
 
 
 // ===================== StudentManual Attendance  =========================
 //put
-Route::post('student-attend/{student_id}/{lecture_id}/{week_no}', [AttendanceController::class, 'studentManualAttendance']);
-// ===================================================================
+Route::post('student-attend/{student_id}/{lecture_id}/{week_no}', [LecturerController::class, 'studentManualAttendance']);
+// =========================================================================
 
 
+// ===================== Get Student For Manual Attendance   =========================
 
-Route::get('checkAttendanceForOne/{student_id}/{lecture_id}', [AttendanceController::class, 'checkStateOfOneLecture']);
+Route::get('students-list-manual-attendance/{lecture_id}/{week_no}', [LecturerController::class, 'showStuForMenualAttend']);
+
+// =================================================================================
 
 
-
-
-// =====================   // ATTENDANCE CRUD   ========================
+//    |||||||||||||| =====================   // LECTURER OPERATIONS   ========================  ||||||||||||||

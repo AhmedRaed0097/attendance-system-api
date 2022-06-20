@@ -83,25 +83,6 @@ class AttendanceController extends Controller
         }
     }
 
-    public function removeBatchFormAttendance($lecture_id, $week_no)
-    {
-
-        $data = Attendance::where('lecture_id', $lecture_id)->where('week_no', $week_no)->delete();
-
-        if ($data > 1) {
-            return response()->json([
-                'message' => 'تم حذف جدول التحضير بنجاح',
-                'status_code' => 200
-            ]);
-        } else {
-            return response()->json([
-                'message' => 'لايوجد كشف تحضير للدفعة في هذا الاسبوع',
-                'status_code' => 404
-            ]);
-        }
-
-    }
-
     public function generateQr($lecture_id, $week_no){
         return response()->json([
             'message' => "تم إنشاء جدول التحضير بنجاح",
@@ -109,81 +90,9 @@ class AttendanceController extends Controller
         ]);
 
     }
-    public function addStudentForAttendance($lecture_id, $week_no)
-    {
-
-        $check = Attendance::where('lecture_id', $lecture_id)->where('week_no', $week_no)->get();
-        if ($check->count() <  1) {
-
-            $table = Lecture::find($lecture_id)->masterTable;
-            // $students = Student::all()->where('level', $table->level)->where('major', $table->major)->where('batch_type', $table->batch_type);
-
-            // $lec = Lecture::find($lecture_id);
-            $students = Student::where('master_table_id', $table->id)->get();
 
 
-            // Add all student to attendance table
-            foreach ($students as $student) {
-                Attendance::create([
-                    'student_id' => $student->id,
-                    'lecture_id' => $lecture_id,
-                    'state' => 0,
-                    'week_no' => $week_no
-                ]);
-            }
-        } else {
 
-            return response()->json([
-                'message' => "هناك جدول تحضير موجود مسبقا  لهذا الأسبوع",
-                'status_code' => 401
-
-
-            ]);
-        }
-
-                    return response()->json([
-                        'message' => "تم إنشاء جدول التحضير بنجاح",
-                        'status_code' => 200
-                    ]);
-    }
-
-    public function showStuForMenualAttend($lecture_id, $week_no)
-    {
-        $attendance_data_list = [];
-        $student_data_list = [];
-        $data = [];
-
-        $attendRecords = Attendance::all()->where('lecture_id', $lecture_id)->where('week_no', $week_no);
-        array_push($attendance_data_list, [
-
-            'attendance_date' => $attendRecords->first()->created_at,
-            'lecture_id' => $attendRecords->first()->lecture->id,
-            "major" => $attendRecords[0]->student->masterTable->major,
-            "level" => $attendRecords[0]->student->masterTable->level,
-            "batch_type" => $attendRecords[0]->student->masterTable->batch_type,
-            'subject_name' => $attendRecords->first()->lecture->subject->subject_name,
-            'week_no' => $attendRecords->first()->week_no
-
-        ]);
-        foreach ($attendRecords as $record) {
-            array_push($student_data_list, [
-
-
-                "id" => $record->student->id,
-                "student_name" => $record->student->student_name,
-                'state' => $record->state
-
-
-            ]);
-        }
-        $data['attendance_data'] = $attendance_data_list[0];
-        $data['students_data'] = $student_data_list;
-        return response()->json([
-            'message' => 'تم جلب البيانات بنجاح',
-            'status_code' => 200,
-            'data' => $data
-        ]);
-    }
 
     public function getLectureById(Request $request)
     {
@@ -312,80 +221,6 @@ class AttendanceController extends Controller
         // return $l;
         // return $rr;
         return $final_result;
-    }
-
-    public function studentScanAttendance($student_id, $lecture_id, $week_no)
-    {
-        // $attend = Attendance::all()->where('student_id', $student_id)->where('lecture_id', $lecture_id)->where('week_no', $week_no)->first()->update(['state' => 1]);
-        $attend = Attendance::first()->where('student_id', $student_id)->where('lecture_id', $lecture_id)->where('week_no', $week_no)->get();
-
-        if ($attend[0]['state'] == 0) {
-            // $attend->update(['state' => 1]);
-            $attend[0]->state = 1;
-
-            $attend[0]->save();
-            return response()->json([
-                'attendance_data' => $attend,
-                'message' => 'تم تسجيل الحضور بنجاح',
-                'status_code' => 201
-            ]);
-        } else {
-            return response()->json([
-                'attendance_data' => $attend,
-                'message' => 'تم تسجيل الحضور مسبقاً',
-                'status_code' => 202
-            ]);
-        }
-    }
-    public function studentManualAttendance($student_id, $lecture_id, $week_no)
-    {
-        // $attend = Attendance::all()->where('student_id', $student_id)->where('lecture_id', $lecture_id)->where('week_no', $week_no)->first()->update(['state' => 1]);
-        $attend = Attendance::first()->where('student_id', $student_id)->where('lecture_id', $lecture_id)->where('week_no', $week_no)->first();
-        if ($attend->state == 1) {
-            $attend->update(['state' => 0]);
-            return response()->json([
-                'message' => 'تم حذف تسجيل الحضور بنجاح',
-                'status_code' => 200
-            ]);
-        } else {
-            $attend->update(['state' => 1]);
-            return response()->json([
-                'message' => 'تم تسجيل الحضور بنجاح',
-                'status_code' => 200
-            ]);
-        }
-    }
-    public function getAttendanceTableForStudent(Request $request)
-    {
-        $result = [];
-        if ($request->lecture_id == null) {
-            $attend = Attendance::where('student_id', $request->student_id)->get();
-        } else {
-            $attend = Attendance::where('student_id', $request->student_id)->get();
-        }
-        if ($attend->count() > 0) {
-            foreach ($attend as $att) {
-                array_push($result, [
-                    'id' => $att->id,
-                    'subject_name' => $att->lecture->subject->subject_name,
-                    'day' => $att->lecture->period->day,
-                    'from' => $att->lecture->period->from,
-                    'to' => $att->lecture->period->to,
-                    'week_no' => $att->week_no,
-                    'state' => $att->state
-                ]);
-            }
-            return response()->json([
-                'message' => 'تم جلب البيانات بنجاح',
-                'status_code' => 200,
-                'data' => $result,
-            ]);
-        } else {
-            return response()->json([
-                'message' => 'لايوجد بيانات تحضير لهذه المحاضرة',
-                'status_code' => 200,
-            ]);
-        }
     }
 
     public function addLecture()
@@ -643,43 +478,6 @@ public function uploadSubjects(Request $request){
             ]);
         }
     }
-    // For Lecturer Lectures Dropdown
-    public function getLecturerLectures($lecturer_id)
-    {
-        $lecturerLectureList = [];
-        $lectures_list = Lecture::all()->where('lecturer_id', $lecturer_id);
-        foreach ($lectures_list as $lecture) {
-            $att = Attendance::all()->where('lecture_id', $lecture->id)->last();
-
-            $rr["Lecture" . $lecture->id] = [
-                "lecture_id" => $lecture->id,
-                // for dropdown menu
-                "subject_title" => $lecture->subject->subject_name .'( ' . $lecture->period->from .' - '. $lecture->period->to . ' )',
-                "subject_name" => $lecture->subject->subject_name,
-                "day" => $lecture->period->day,
-                "from" => $lecture->period->from,
-                "to" => $lecture->period->to
-                // "lecturer_name" => $lecture->lecturer->lecturer_name,
-            ];
-            if ($att == null) {
-
-                $rr["Lecture" . $lecture->id]['last_week'] =  null;
-            } else {
-                $rr["Lecture" . $lecture->id]['last_week'] =  $att->week_no;
-            }
-            array_push($lecturerLectureList, $rr["Lecture" . $lecture->id]);
-        }
-
-
-        // return $lecturerLectureList;
-        return response()->json([
-            'data' => $lecturerLectureList,
-            'message' => 'تم جلب البيانات بنجاح',
-            'status_code'=>200
-        ]);
-        // 'Row List' => $lectures_list,
-
-    }
 
     public function getLecturesForStudent($student_id)
     {
@@ -712,46 +510,6 @@ public function uploadSubjects(Request $request){
         // 'Row List' => $lectures_list,
 
     }
-    public function getStudentLectures($student_id)
-    {
-
-        $student_data = Student::find($student_id);
-
-        $studentLectureList = [];
-        $lectures_data = MasterTable::find($student_data->master_table_id)->lectures;
-
-        foreach ($lectures_data as $lecture) {
-            array_push(
-                $studentLectureList,
-                [
-                    'lecture_id' => $lecture->id,
-                    'subject_name' => $lecture->subject->subject_name,
-                    "lecturer_name" => $lecture->lecturer->lecturer_name,
-                    "subject_name" => $lecture->subject->subject_name,
-                    "day" => $lecture->period->day,
-                    'from' => $lecture->period->from,
-                    'to' => $lecture->period->to,
-
-                ]
-            );
-        }
-
-        return response()->json([
-            'data' => $studentLectureList,
-            'message' => 'تم جلب البيانات بنجاح',
-            'status_code'=>200
-            // 'data' => $student_data
-        ]);
-        // return $studentLectureList;
-        // return $lectures_data;
-        // return $student_data;
-        // return $$tables_list;
-        // return $lecturerLectureList;
-        // return $r;
-        // 'Row List' => $lectures_list,
-
-    }
-
 
     public function getAllTables()
     {

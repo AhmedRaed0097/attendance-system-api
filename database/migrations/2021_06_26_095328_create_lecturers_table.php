@@ -17,7 +17,9 @@ class CreateLecturersTable extends Migration
             $table->id();
             $table->string('lecturer_name');
             $table->string('email')->unique();
-            $table->integer("user_id")->unique()->nullable();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password')->nullable();
+            // $table->integer("user_id")->unique()->nullable();
             $table->boolean("state");
             $table->timestamps();
         });

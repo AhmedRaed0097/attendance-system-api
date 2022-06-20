@@ -110,7 +110,7 @@ class AuthController extends Controller
         $user = $request->user();
         $user->tokens()->delete();
         return response()->json([
-            "message" => 'tokens are deleted',
+            "message" => 'تم تسجيل الخروج بنجاح',
             'status_code' => 200
 
         ]);

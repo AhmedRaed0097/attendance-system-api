@@ -4,12 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-class Student extends Model
+class Student extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable, HasApiTokens;
+
     protected $casts = [
         'master_table_id' => 'integer',
+        'email_verified_at' => 'datetime',
     ];
     protected $fillable = [
         //        'name',
@@ -17,11 +22,20 @@ class Student extends Model
         'master_table_id',
         'state',
         'email',
+        'password',
     ];
+
+
+    protected $table = 'students';
+
+
     protected $hidden = [
         'created_at',
         'email_verified_at',
-        'updated_at'
+        'password',
+        'email_verified_at',
+        'updated_at',
+
     ];
 
     public function user()

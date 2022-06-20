@@ -4,20 +4,30 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Lecturer extends Model
+
+class Lecturer extends Authenticatable
 {
     use HasFactory;
 
     protected $fillable = [
         'lecturer_name',
         'email',
+        'email',
+        'password',
         'state'
     ];
+
+    protected $table = 'lecturers';
+
 
     protected $hidden = [
         'created_at',
         'updated_at'
+    ];
+    protected $casts = [
+        'email_verified_at' => 'datetime',
     ];
 
     public function user()
