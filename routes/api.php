@@ -52,11 +52,20 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->get('/user',[AuthController::class, 'getUser']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/logout', [AuthController::class, 'logout']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user',[AuthController::class, 'getUser']);
 });
+
+
+// ===================== Set password fpr first time  =================================
+
+Route::post('set-password',[AuthController::class, 'setPasword']);
+
+// ================================================================================
+
+
 // ===============================================================
 
 //    |||||||||||||| =====================   ADMIN OPERATIONS   ========================  ||||||||||||||
@@ -190,30 +199,6 @@ Route::post('remove-batch/{lecture_id}/{week_no}', [LectureController::class, 'r
 
 //    |||||||||||||| =====================    STUDENT OPERATIONS   ========================  ||||||||||||||
 
-// ===================== Student Login  =================================
-
-Route::post('student/login', [StudentController::class, 'login']);
-
-// ================================================================================
-// ===================== Student Login  =================================
-
-Route::middleware('auth:students')->post('student/logout', [StudentController::class, 'logout']);
-
-// ================================================================================
-
-// ===================== Get Student  =================================
-
-
-Route::get('student/user',[StudentController::class, 'getUser']);
-// ================================================================================
-
-
-// ===================== Set student password fpr first time  =================================
-
-Route::post('student/set-password',[StudentController::class, 'setPasword']);
-
-// ================================================================================
-
 
 // ===================== Student Scan Attendance  =================================
 //put
@@ -241,29 +226,6 @@ Route::get('getLecturesForStudent/{student_id}', [StudentController::class, 'get
 
 
 //    |||||||||||||| =====================    LECTURER OPERATIONS   ========================  ||||||||||||||
-
-
-
-
-
-// ===================== Lecturer Login  =================================
-
-Route::post('lecturer/login', [LecturerController::class, 'login']);
-
-// ================================================================================
-
-// ===================== Get Student  =================================
-
-
-Route::middleware('auth:students')->get('lecturer/user',[StudentController::class, 'getUser']);
-// ================================================================================
-
-
-
-
-
-
-
 
 
 // =====================================   /GET LECTURER LECTURES  =================================

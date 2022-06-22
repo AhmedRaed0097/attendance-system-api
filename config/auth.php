@@ -47,13 +47,13 @@ return [
             'hash' => false,
         ],
 
-        'students' => [
-            'driver' => 'token',
+        'student' => [
+            'driver' => 'sanctum',
             'provider' => 'students',
         ],
 
-        'lecturers' => [
-            'driver' => 'token',
+        'lecturer' => [
+            'driver' => 'sanctum',
             'provider' => 'lecturers',
         ],
     ],

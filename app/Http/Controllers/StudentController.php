@@ -1,98 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\MasterTable;
 use App\Models\Student;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Hash;
-
-
-
 class StudentController extends Controller
 {
-    public function login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-            'device_name' => 'required',
-        ]);
-
-        $student = Student::where('email', $request->email)->first();
-
-
-        if (!$student) {
-            return response()->json([
-                'message' => 'المستخدم غير موجود ، الرجاء التأكد من البريد الإلتكروني او كلمة المرور.',
-                'status_code' => 404
-            ], 404);
-        } else if (!$student['password']) {
-            return response()->json([
-
-                'password' => $student['password'],
-                'message' => 'الرجاْ إعادة تعيين كلمة المرور للمرة الاولى',
-                'status_code' => 2010
-            ]);
-        } else {
-
-            if (!Hash::check($request->password, $student->password)) {
-                throw ValidationException::withMessages([
-                    'password' => ['المستخدم غير موجود ، الرجاء التأكد من البريد الإلتكروني او كلمة المرور.'],
-                ]);
-            }
-
-            $token = $student->createToken($request->device_name)->plainTextToken;
-
-            $result['student_id'] = $student->id;
-            $result['name'] = $student->student_name;
-            $result['major'] = $student->masterTable->major;
-            $result['level'] = $student->masterTable->level;
-            $result['batch_type'] = $student->masterTable->batch_type;
-            $result['user_type'] = 'student';
-
-            $response = [
-                'user' => $result,
-                'token' => $token,
-            ];
-            return response()->json([
-                'data' => $response,
-                'message' => 'تم تسجيل الدخول بنجاح'
-            ], 200);
-        }
-    }
-
-    public function getUser(Request $request)
-    {
-        $student = $request->user();
-
-        // $student = Student::first();
-        // $student['name'] = $student->student_name;
-        // $student['major'] = $student->masterTable->major;
-        // $student['level'] = $student->masterTable->level;
-        // $student['batch_type'] = $student->masterTable->batch_type;
-
-        // $response = [
-        //     'user' => $student,
-        // ];
-        return response()->json([
-            'data' => $student,
-            'message' => 'تم جلب بيانات المستخدم بنجاح'
-        ]);
-    }
-
-    public function logout(Request $request)
-    {
-        $user = $request->user();
-        $user->tokens()->delete();
-        return response()->json([
-            "message" => 'تم تسجيل الخروج بنجاح',
-            'status_code' => 200
-
-        ]);
-    }
-
     public function getStudentLectures($student_id)
     {
 
@@ -189,36 +104,4 @@ class StudentController extends Controller
             ]);
         }
     }
-    // ToDo : Set User password for first time
-    public function setPasword(Request $request)
-    {
-        $fields = $request->validate([
-            // 'name' => 'required|string',
-            'email' => 'required|string|email',
-            'password' => 'required|string|confirmed',
-        ]);
-        $student = Student::where('email', $request->email)->first();
-        if (!$student) {
-            return response()->json([
-                'message' => 'المستخدم غير موجود ، الرجاء التأكد من البريد الإلتكروني او كلمة المرور.',
-                'status_code' => 404
-            ], 404);
-        } else {
-            if (!$student->passwrod) {
-                $hashedPassword = bcrypt($fields['password']);
-                $student->update(['password' => $hashedPassword]);
-                return response()->json([
-                    'message' => 'تم إعادة تعيين كلمة المرور بنجاح',
-                    'status_code' => 200
-                ]);
-            }else{
-                return response()->json([
-                    'message' => 'كلمة المرور موجودة مسبقاً',
-                    'status_code' => 409
-                ]);
-            }
-        }
-    }
-
-
 }

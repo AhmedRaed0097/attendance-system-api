@@ -50,12 +50,12 @@ class User extends Authenticatable
 
 
 
-    public function student()
-    {
-        return $this->hasOne(Student::class);
-    }
-    public function lecturer()
-    {
-        return $this->hasOne(Lecturer::class);
-    }
+    // public function student()
+    // {
+    //     return $this->hasOne(Student::class);
+    // }
+    // public function lecturer()
+    // {
+    //     return $this->hasOne(Lecturer::class);
+    // }
 }

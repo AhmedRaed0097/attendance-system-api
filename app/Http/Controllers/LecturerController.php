@@ -1,67 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\Lecture;
-use App\Models\Lecturer;
-use App\Models\MasterTable;
 use App\Models\Student;
 use App\Models\Attendance;
-use App\Models\Major;
-use App\Models\Subject;
-use App\Models\Period;
-use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-
 class LecturerController extends Controller
 {
-
-    public function login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-            'device_name' => 'required',
-        ]);
-
-        $user = Lecturer::where('email', $request->email)->first();
-
-        if (!$user) {
-            return response()->json([
-                'message' => 'المستخدم غير موجود ، الرجاء التأكد من البريد الإلتكروني او كلمة المرور.',
-                'status_code' => 404
-            ], 404);
-        } else if (!$user->passowrd) {
-            return response()->json([
-                'message' => 'الرجاْ إعادة تعيين كلمة المرور للمرة الاولى',
-                'status_code' => 2010
-            ]);
-        } else {
-
-            if (!Hash::check($request->password, $user->password)) {
-                throw ValidationException::withMessages([
-                    'password' => ['المستخدم غير موجود ، الرجاء التأكد من البريد الإلتكروني او كلمة المرور.'],
-                ]);
-            }
-
-            $token = $user->createToken($request->device_name)->plainTextToken;
-
-            $user['lecturer_id'] = $user->id;
-            $user['lecturer_name'] = $user->lecturer_name;
-
-            $response = [
-                'user' => $user,
-                'token' => $token,
-            ];
-            return response()->json([
-                'data' => $response,
-                'message' => 'تم تسجيل الدخول بنجاح'
-            ], 200);
-        }
-    }
-
     // For Lecturer Lectures Dropdown
     public function getLecturerLectures($lecturer_id)
     {

@@ -21,19 +21,22 @@ class Lecturer extends Authenticatable
 
     protected $table = 'lecturers';
 
-
     protected $hidden = [
         'created_at',
-        'updated_at'
+        'email_verified_at',
+        'password',
+        'email_verified_at',
+        'updated_at',
+
     ];
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
     public function lectures()
     {
         return $this->hasMany(Lecture::class);
