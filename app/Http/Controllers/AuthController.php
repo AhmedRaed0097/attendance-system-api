@@ -169,10 +169,9 @@ class AuthController extends Controller
                 'status_code' => 404
             ], 404);
         } else {
-            $hasPassowrd = $user->whereNotNull('password')->get();
+            $hasPassowrd = $user->where('email', $request->email)->whereNotNull('password')->get();
             if ($hasPassowrd->count() > 0) {
                 return response()->json([
-                    'state' => $hasPassowrd,
                     'message' => 'كلمة المرور موجودة مسبقاً',
                     'status_code' => 409
                 ]);
