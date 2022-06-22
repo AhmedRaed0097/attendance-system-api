@@ -26,7 +26,7 @@ class LecturersImport implements ToModel,WithHeadingRow
     {
         //dd($row);
         return new Lecturer([
-            'lecturer_name'     => $row['name'],
+            'name'     => $row['name'],
             'email'            => $row['email'],
             'state'  => $this->state,
         ]);

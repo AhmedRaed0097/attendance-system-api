@@ -12,7 +12,7 @@ class Lecturer extends Authenticatable
     use HasFactory;
 
     protected $fillable = [
-        'lecturer_name',
+        'name',
         'email',
         'email',
         'password',

@@ -27,7 +27,7 @@ class StudentsImport implements ToModel,WithHeadingRow
     {
         //dd($row);
         return new Student([
-            'student_name'     => $row['name'],
+            'name'     => $row['name'],
             'email'            => $row['email'],
             'master_table_id'  => $this->masterTableId,
             'state'  => $this->state,

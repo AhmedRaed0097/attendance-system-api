@@ -17,7 +17,7 @@ POST http://192.168.55.127:2022/api/addstudent
 content-type: application/json
 
 {
-    "student_name": "Ahmed Omer",
+    "name": "Ahmed Omer",
     "level": 1,
     "batch_type": "General",
     "major": "IT",

@@ -22,7 +22,7 @@ class LecturerController extends Controller
                 "day" => $lecture->period->day,
                 "from" => $lecture->period->from,
                 "to" => $lecture->period->to
-                // "lecturer_name" => $lecture->lecturer->lecturer_name,
+                // "name" => $lecture->lecturer->name,
             ];
             if ($att == null) {
 
@@ -124,7 +124,7 @@ class LecturerController extends Controller
 
 
                 "id" => $record->student->id,
-                "student_name" => $record->student->student_name,
+                "name" => $record->student->name,
                 'state' => $record->state
 
 

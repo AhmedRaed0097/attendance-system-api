@@ -26,7 +26,7 @@ class StudentFactory extends Factory
         return [
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'student_name' => $this->faker->name(),
+            'name' => $this->faker->name(),
             'master_table_id' => rand(1, 5),
             // 'major' => $majors[rand(0, 1)],
             // 'level' => rand(1, 4),

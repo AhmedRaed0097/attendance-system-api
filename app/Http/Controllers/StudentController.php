@@ -22,7 +22,7 @@ class StudentController extends Controller
                 [
                     'lecture_id' => $lecture->id,
                     'subject_name' => $lecture->subject->subject_name,
-                    "lecturer_name" => $lecture->lecturer->lecturer_name,
+                    "name" => $lecture->lecturer->name,
                     "subject_name" => $lecture->subject->subject_name,
                     "day" => $lecture->period->day,
                     'from' => $lecture->period->from,

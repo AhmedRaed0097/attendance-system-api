@@ -28,7 +28,7 @@ class AttendanceController extends Controller
         foreach ($students as $student) {
             array_push($result, [
                 'id' => $student->id,
-                'student_name' => $student->student_name,
+                'name' => $student->name,
                 // 'major' => $student->major,
                 // 'level' => $student->level,
                 'email' => $student->email,
@@ -104,7 +104,7 @@ class AttendanceController extends Controller
         $lecture["day"] = $period["day"];
         $lecture["from"] = $period["from"];
         $lecture["to"] = $period["to"];
-        $lecture["lecturer_name"] = $lecturer["lecturer_name"];
+        $lecture["name"] = $lecturer["name"];
         return response()->json([
             'lecture' => $lecture
         ]);
@@ -119,7 +119,7 @@ class AttendanceController extends Controller
                 "day" => $lecture->period->day,
                 "from" => $lecture->period->from,
                 "to" => $lecture->period->to,
-                "lecturer_name" => $lecture->lecturer->lecturer_name,
+                "name" => $lecture->lecturer->name,
             ];
         }
         return response()->json([
@@ -162,7 +162,7 @@ class AttendanceController extends Controller
                         "day" => $lecture['lectuer_data']->period->day,
                         "from" => $lecture['lectuer_data']->period->from,
                         "to" => $lecture['lectuer_data']->period->to,
-                        "lecturer_name" => $lecture['lectuer_data']->lecturer->lecturer_name,
+                        "name" => $lecture['lectuer_data']->lecturer->name,
                     ],
                     'state' => $lecture['state']
                 ]
@@ -198,13 +198,13 @@ class AttendanceController extends Controller
                         "day" => $lecture['lectuer_data']->period->day,
                         "from" => $lecture['lectuer_data']->period->from,
                         "to" => $lecture['lectuer_data']->period->to,
-                        "lecturer_name" => $lecture['lectuer_data']->lecturer->lecturer_name,
+                        "name" => $lecture['lectuer_data']->lecturer->name,
                         'week_no' => $lecture['week_no']
 
                     ],
                     // 'student_data' => [
                     //     'student_id' => $student->id,
-                    //     'student_name' => $student->student_name,
+                    //     'name' => $student->name,
                     //     'major' => $student->major,
                     //     'level' => $student->level,
                     //     'batch_type' => $student->batch_type,
@@ -270,7 +270,7 @@ public function uploadLecturers(Request $request){
 
     public function addLecturer()
     {
-        // Send on body => [  Lecturer_name  ]
+        // Send on body => [  name  ]
         $data = request()->all();
         $lecturer =  Lecturer::create($data);
 
@@ -400,7 +400,7 @@ public function uploadSubjects(Request $request){
     }
     public function addStudent()
     {
-        // Send on body => [  Student_name , major , level , batch_type   ]
+        // Send on body => [  name , major , level , batch_type   ]
 
         $data = request()->all();
         $student =  Student::create($data);
@@ -494,7 +494,7 @@ public function uploadSubjects(Request $request){
                 [
                     'lecture_id' => $lecture->id,
                     'subject_name' => $lecture->subject->subject_name,
-                    "lecturer_name" => $lecture->lecturer->lecturer_name,
+                    "name" => $lecture->lecturer->name,
                     "subject_name" => $lecture->subject->subject_name, "day" => $lecture->period->day,
                     'from' => $lecture->period->from,
                     'to' => $lecture->period->to,
@@ -528,7 +528,7 @@ public function uploadSubjects(Request $request){
                 "subject_name" => $lecture->subject->subject_name, "day" => $lecture->period->day,
                 "from" => $lecture->period->from,
                 "to" => $lecture->period->to,
-                "lecturer_name" => $lecture->lecturer->lecturer_name,
+                "name" => $lecture->lecturer->name,
             ];
         }
         return response()->json([
@@ -773,7 +773,7 @@ public function deleteMajor($major_id)
                 'subject_id' => $lecture->subject->id,
                 'subject_name' => $lecture->subject->subject_name,
                 'lecturer_id' => $lecture->lecturer->id,
-                'lecturer_name' => $lecture->lecturer->lecturer_name,
+                'name' => $lecture->lecturer->name,
                 'period_id' => $lecture->period->id,
                 'day' => $lecture->period->day,
                 'from' => $lecture->period->from,
@@ -795,7 +795,7 @@ public function deleteMajor($major_id)
         foreach ($lecturers as $lecturer) {
             array_push($lecturerResult, [
                 'id' => $lecturer->id,
-                'lecturer_name' => $lecturer->lecturer_name,
+                'name' => $lecturer->name,
                 'state' => $lecturer->state,
             ]);
         }

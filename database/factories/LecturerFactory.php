@@ -22,7 +22,7 @@ class LecturerFactory extends Factory
     public function definition()
     {
         return [
-            'lecturer_name' => $this->faker->name(),
+            'name' => $this->faker->name(),
             'state' =>  1,
 
         ];
