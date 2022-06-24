@@ -133,9 +133,7 @@ class AuthController extends Controller
                 $result['name'] = $lecturer->name;
                 $result['user_type'] = 'lecturer';
             } else {
-                $user = User::where('email', $user->email)->first();
-                $result['name'] = $user->name;
-                $result['user_type'] = 'admin';
+                $result = User::where('email', $user->email)->first();
             }
             $response = [
                 'user' => $result,
