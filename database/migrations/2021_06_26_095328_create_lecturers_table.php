@@ -21,6 +21,8 @@ class CreateLecturersTable extends Migration
             $table->boolean("state");
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
+            $table->timestamps();
+
         });
     }
 
