@@ -62,7 +62,41 @@ class AuthController extends Controller
                 ], 200);
             }
         } else if ($request->user_type === 'lecturer') {
-            //
+            $lecturer = Lecturer::where('email', $request->email)->first();
+            if (!$lecturer) {
+                return response()->json([
+                    'message' => 'المستخدم غير موجود ، الرجاء التأكد من البريد الإلتكروني او كلمة المرور.',
+                    'status_code' => 404
+                ], 404);
+            } else if (!$lecturer['password']) {
+                return response()->json([
+
+                    'password' => $lecturer['password'],
+                    'message' => 'الرجاْ إعادة تعيين كلمة المرور للمرة الاولى',
+                    'status_code' => 2010
+                ]);
+            } else {
+
+                if (!Hash::check($request->password, $lecturer->password)) {
+                    return response()->json([
+                        'message' => 'المستخدم غير موجود ، الرجاء التأكد من البريد الإلتكروني او كلمة المرور.',
+                        'status_code' => 404
+                    ], 404);
+                }
+
+                $token = $lecturer->createToken($request->user_type)->plainTextToken;
+
+                $lecturer['user_type'] = 'lecturer';
+
+                $response = [
+                    'user' => $lecturer,
+                    'token' => $token,
+                ];
+                return response()->json([
+                    'data' => $response,
+                    'message' => 'تم تسجيل الدخول بنجاح'
+                ], 200);
+            }
         } else {
             $user = User::where('email', $request->email)->first();
             if (!$user) {
@@ -103,6 +137,7 @@ class AuthController extends Controller
             $user = $request->user();
             if (Student::where('email', $user->email)->count() > 0) {
                 $student = Student::where('email', $user->email)->first();
+                $result['id'] = $student->id;
                 $result['name'] = $student->name;
                 $result['major'] = $student->masterTable->major;
                 $result['level'] = $student->masterTable->level;
@@ -110,6 +145,7 @@ class AuthController extends Controller
                 $result['user_type'] = 'student';
             } else if (Lecturer::where('email', $user->email)->count() > 0) {
                 $lecturer = Lecturer::where('email', $user->email)->first();
+                $result['id'] = $lecturer->id;
                 $result['name'] = $lecturer->name;
                 $result['user_type'] = 'lecturer';
             } else {
