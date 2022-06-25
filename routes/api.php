@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\LecturerController;
@@ -48,7 +49,7 @@ Route::get('account/{id}/consumer', function ($id) {
 
 // ===========    *** Authentication ***   ======================
 
-Route::post('/register', [AuthController::class, 'register']);
+// Route::post('/register', [AuthController::class, 'register']);
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -62,6 +63,23 @@ Route::middleware(['auth:sanctum'])->group(function () {
 // ===================== Set password fpr first time  =================================
 
 Route::post('set-password',[AuthController::class, 'setPasword']);
+
+// ================================================================================
+
+// ===================== EMPLOYEE CURD  =================================
+
+Route::post('add-employee',[EmployeeController::class, 'store']);
+
+
+Route::post('update-employee',[EmployeeController::class, 'update']);
+
+Route::post('import-employees', [EmployeeController::class, 'uploadEmployees']);
+
+
+Route::delete('delete-employee/{id}',[EmployeeController::class, 'delete']);
+
+
+Route::get('employees/list',[EmployeeController::class, 'getEmployeesList']);
 
 // ================================================================================
 
