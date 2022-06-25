@@ -5,15 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class Lecturer extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable, HasApiTokens;
+
 
     protected $fillable = [
         'name',
-        'email',
         'email',
         'password',
         'state'
@@ -23,10 +24,9 @@ class Lecturer extends Authenticatable
 
     protected $hidden = [
         'created_at',
+        'updated_at',
         'email_verified_at',
         'password',
-        'email_verified_at',
-        'updated_at',
 
     ];
     protected $casts = [
