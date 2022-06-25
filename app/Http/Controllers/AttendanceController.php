@@ -232,7 +232,7 @@ class AttendanceController extends Controller
 
         return response()->json([
             'lecture_data' => $lecture,
-            'message' => 'The lecture has been successfully added',
+            'message' => 'تم إضافة المحاضرة بنجاح',
             'status_code' => 201
         ]);
     }
@@ -244,7 +244,7 @@ class AttendanceController extends Controller
 
         if ($data == 1) {
             return response()->json([
-                'message' => 'The lecture has been successfully deleted',
+                'message' => 'تم حذف المحاضرة بنجاح',
                 'status_code' => 200
             ]);
         } else {
@@ -275,9 +275,9 @@ public function uploadLecturers(Request $request){
         $lecturer =  Lecturer::create($data);
 
         return response()->json([
-            'lecture_data' => $lecturer,
-            'message' => 'The lecturer has been successfully added',
-            'status_code' => 201
+            'data' => $lecturer,
+            'message' => 'تم إضافة المحاضر بنجاح',
+            'status_code' => 200
         ]);
     }
     public function deleteLecturer($lecturer_id)
@@ -407,7 +407,7 @@ public function uploadSubjects(Request $request){
 
         return response()->json([
             'student_data' => $student,
-            'message' => 'The student has been successfully added',
+            'message' => 'تم إضافة الطالب بنجاح',
             'status_code' => 201
         ]);
     }
@@ -468,12 +468,12 @@ public function uploadSubjects(Request $request){
 
         if ($data == 1) {
             return response()->json([
-                'message' => 'The table has been successfully deleted',
+                'message' => 'تم حذف الجدول بنجاح',
                 'status_code' => 200
             ]);
         } else {
             return response()->json([
-                'message' => 'This record not found',
+                'message' => 'الجدول غير موجود',
                 'status_code' => 404
             ]);
         }
@@ -678,12 +678,12 @@ public function addMajor(Request $request)
         $response = Major::create($data);
         return response()->json([
             'data' => $response,
-            'message' => 'تم إضافة الفترة بنجاح',
+            'message' => 'تم إضافة التخصص بنجاح',
             'status_code' => 200
         ]);
     } else {
         return response()->json([
-            'message' => 'الفترة موجودة مسبقاً',
+            'message' => 'التخصص موجودة مسبقاً',
             'status_code' => 404
         ]);
     }
@@ -695,12 +695,12 @@ public function updateMajor(Request $request){
     if ($major) {
         $major->fill($request->all())->save();
         return response()->json([
-            'message' => 'تم تحديث بيانات الفترة بنجاح',
+            'message' => 'تم تحديث بيانات التخصص بنجاح',
             'status_code' => 201
         ]);
     } else {
         return response()->json([
-            'message' => 'الفترة غير موجود',
+            'message' => 'التخصص غير موجود',
             'status_code' => 404
         ]);
     }
@@ -758,7 +758,7 @@ public function deleteMajor($major_id)
 
         return response()->json([
             'lecture_data' => $lecture,
-            'message' => 'The lecture has been successfully updated',
+            'message' => 'تم تحديث بيانات المحاضرة بنجاح',
             'status_code' => 204
         ]);
     }

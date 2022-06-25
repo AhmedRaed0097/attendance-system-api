@@ -70,7 +70,7 @@ class LecturerController extends Controller
 
             return response()->json([
                 'message' => "هناك جدول تحضير موجود مسبقا  لهذا الأسبوع",
-                'status_code' => 401
+                'status_code' => 409
 
 
             ]);
