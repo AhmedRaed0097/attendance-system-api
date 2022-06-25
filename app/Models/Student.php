@@ -17,7 +17,6 @@ class Student extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
     protected $fillable = [
-        //        'name',
         'name',
         'master_table_id',
         'state',
