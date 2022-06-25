@@ -13,36 +13,6 @@ use Illuminate\Support\Str;
 class AuthController extends Controller
 {
 
-    public function register(Request $request)
-    {
-        $fields = $request->validate([
-            // 'name' => 'required|string',
-            'email' => 'required|string|unique:users,email',
-            'user_type' => 'required|string',
-            'password' => 'required|string|confirmed',
-        ]);
-        $user = User::create([
-            // 'name' => $fields['name'],
-            'email' => $fields['email'],
-            'user_type' => $fields['user_type'],
-            'email_verified_at' => now(),
-            'password' => bcrypt($fields['password']),
-            'remember_token' => Str::random(10),
-
-        ]);
-        $token = $user->createToken('register')->plainTextToken;
-        $response = [
-            'user' => $user,
-            'token' => $token,
-        ];
-        return response()->json([
-            'data' => $response,
-            'message' => 'تم إنشاء الحساب بنجاح'
-
-        ], 201);
-        return $response;
-    }
-
     public function login(Request $request)
     {
         $request->validate([
@@ -94,27 +64,37 @@ class AuthController extends Controller
         } else if ($request->user_type === 'lecturer') {
             //
         } else {
-
-
-
             $user = User::where('email', $request->email)->first();
-            if (!$user || !Hash::check($request->password, $user->password)) {
-                throw ValidationException::withMessages([
-                    'email' => ['The provided credentials are incorrect.'],
+            if (!$user) {
+                return response()->json([
+                    'message' => 'المستخدم غير موجود ، الرجاء التأكد من البريد الإلتكروني او كلمة المرور.',
+                    'status_code' => 404
+                ], 404);
+            } else if (!$user['password']) {
+                return response()->json([
+
+                    'password' => $user['password'],
+                    'message' => 'الرجاْ إعادة تعيين كلمة المرور للمرة الاولى',
+                    'status_code' => 2010
                 ]);
+            } else {
+                if (!Hash::check($request->password, $user->password)) {
+                    return response()->json([
+                        'message' => 'المستخدم غير موجود ، الرجاء التأكد من البريد الإلتكروني او كلمة المرور.',
+                        'status_code' => 404
+                    ], 404);
+                }
+                $token = $user->createToken($request->user_type)->plainTextToken;
+                $response = [
+                    'user' => $user,
+                    'token' => $token,
+                ];
+                return response()->json([
+                    'data' => $response,
+                    'message' => 'تم تسجيل الدخول بنجاح'
+                ], 200);
             }
-
-            $token = $user->createToken($request->device_name)->plainTextToken;
-
-            $response = [
-                'user' => $user,
-                'token' => $token,
-            ];
-            return response()->json([
-                'data' => $response,
-                'message' => 'تم تسجيل الدخول بنجاح'
-            ], 200);
-        }
+        } 
     }
     public function getUser(Request $request)
     {
@@ -158,8 +138,10 @@ class AuthController extends Controller
         ]);
         if ($request->user_type === 'student') {
             $user = Student::where('email', $request->email)->first();
-        } else {
+        } else if ($request->user_type === 'lecturer') {
             $user = Lecturer::where('email', $request->email)->first();
+        } else{
+            $user = User::where('email', $request->email)->first();
         }
         if (!$user) {
             return response()->json([
