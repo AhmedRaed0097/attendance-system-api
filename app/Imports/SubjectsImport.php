@@ -15,7 +15,7 @@ class SubjectsImport implements ToModel,WithHeadingRow
 
     public function __construct() {
     }
-    
+
     /**
     * @param array $row
     *
@@ -24,7 +24,7 @@ class SubjectsImport implements ToModel,WithHeadingRow
     public function model(array $row)
     {
         return new Subject([
-            'subject_name'     => $row['subject_name'],
+            'subject_name'     => $row['name'],
         ]);
     }
 }
