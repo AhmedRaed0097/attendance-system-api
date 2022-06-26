@@ -4,14 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Imports\StudentsImport;
 use App\Imports\LecturersImport;
+use App\Imports\PeriodsImport;
 use App\Imports\MajorsImport;
 use App\Imports\SubjectsImport;
 use Illuminate\Http\Request;
 use App\Models\Lecture;
 use App\Models\Lecturer;
+use App\Models\Attendance;
 use App\Models\MasterTable;
 use App\Models\Student;
-use App\Models\Attendance;
 use App\Models\Major;
 use App\Models\Subject;
 use App\Models\Period;
@@ -40,8 +41,8 @@ class AttendanceController extends Controller
         }
         return response()->json([
             'data' => $result,
-            'message'=>'تم جلب البيانات بنجاح',
-            'status_code'=>200,
+            'message' => 'تم جلب البيانات بنجاح',
+            'status_code' => 200,
         ]);
     }
     public function updateStudent(Request $request)
@@ -52,7 +53,7 @@ class AttendanceController extends Controller
         if ($speakUpdate) {
             $speakUpdate->fill($input)->save();
             return response()->json([
-                'data'=>$input,
+                'data' => $input,
                 'message' => 'تم تحديث بيانات الطالب بنجاح',
                 'status_code' => 201
             ]);
@@ -83,12 +84,12 @@ class AttendanceController extends Controller
         }
     }
 
-    public function generateQr($lecture_id, $week_no){
+    public function generateQr($lecture_id, $week_no)
+    {
         return response()->json([
             'message' => "تم إنشاء جدول التحضير بنجاح",
             'status_code' => 200
         ]);
-
     }
 
 
@@ -254,19 +255,19 @@ class AttendanceController extends Controller
             ]);
         }
     }
-// ==================================================================
+    // ==================================================================
 
-public function uploadLecturers(Request $request){
+    public function uploadLecturers(Request $request)
+    {
+        if ($request->has('file') && $request->has('state')) {
+            (new LecturersImport($request->state))->import($request->file, 'local', \Maatwebsite\Excel\Excel::XLSX);
+        }
 
-    if($request->has('file') && $request->has('state')) {
-        (new LecturersImport($request->state))->import($request->file, 'local', \Maatwebsite\Excel\Excel::XLSX);
+        return response()->json([
+            'message' => 'تم حفظ البيانات بنجاح',
+            'status_code' => 200
+        ]);
     }
-
-    return response()->json([
-        'message' => 'تم حفظ البيانات بنجاح',
-        'status_code' => 200
-    ]);
-}
 
     public function addLecturer()
     {
@@ -298,7 +299,7 @@ public function uploadLecturers(Request $request){
             ]);
         }
     }
-// ========================== Subject ===================================
+    // ========================== Subject ===================================
     public function addSubject()
     {
         $data = request()->all();
@@ -312,16 +313,17 @@ public function uploadLecturers(Request $request){
     }
 
 
-public function uploadSubjects(Request $request){
+    public function uploadSubjects(Request $request)
+    {
 
-    if($request->has('file') ) {
-        Excel::import(new SubjectsImport , $request->file,'local', \Maatwebsite\Excel\Excel::XLSX);
+        if ($request->has('file')) {
+            Excel::import(new SubjectsImport, $request->file, 'local', \Maatwebsite\Excel\Excel::XLSX);
+        }
+        return response()->json([
+            'message' => 'تم حفظ البيانات بنجاح',
+            'status_code' => 200
+        ]);
     }
-    return response()->json([
-        'message' => 'تم حفظ البيانات بنجاح',
-        'status_code' => 200
-    ]);
-}
     public function updateSubject(Request $request)
     {
 
@@ -382,12 +384,13 @@ public function uploadSubjects(Request $request){
     }
 
 
-    public function uploadStudents(Request $request){
+    public function uploadStudents(Request $request)
+    {
 
         //return $request->all();
 
-        if($request->has('file') && $request->has('master_table_id')) {
-            (new StudentsImport($request->master_table_id,$request->state))->import($request->file, 'local', \Maatwebsite\Excel\Excel::XLSX);
+        if ($request->has('file') && $request->has('master_table_id')) {
+            (new StudentsImport($request->master_table_id, $request->state))->import($request->file, 'local', \Maatwebsite\Excel\Excel::XLSX);
         }
 
 
@@ -418,20 +421,20 @@ public function uploadSubjects(Request $request){
         $check = MasterTable::where('major', request()->major)->where('level', request()->level)->where('batch_type', request()->batch_type)->get();
         if ($check->count() <  1) {
 
-        $lecture =  MasterTable::create($data);
+            $lecture =  MasterTable::create($data);
 
-        return response()->json([
-            'lecture_data' => $lecture,
-            'message' => 'تم إضافة الجدول بنجاح',
-            'status_code' => 200
-        ]);
-    }else{
+            return response()->json([
+                'lecture_data' => $lecture,
+                'message' => 'تم إضافة الجدول بنجاح',
+                'status_code' => 200
+            ]);
+        } else {
 
-        return response()->json([
-            'message' => 'الجدول موجود مسبقاً',
-            'status_code' => 422
-        ]);
-    }
+            return response()->json([
+                'message' => 'الجدول موجود مسبقاً',
+                'status_code' => 422
+            ]);
+        }
     }
     public function updateTable(Request $request)
     {
@@ -566,6 +569,12 @@ public function uploadSubjects(Request $request){
 
         // $tables = MasterTable::all();
         foreach ($lectures as $lecture) {
+
+            $last_attendance = null;
+
+            $last_attendance = Attendance::all()->where('lecture_id', $lecture->id)->last();
+
+
             array_push($lecturerResult, [
                 'id' => $lecture->id,
                 'lecture_title' => " [يوم {$lecture->period->day}] [المادة {$lecture->subject->subject_name}] [الفترة {$lecture->period->from} - {$lecture->period->to}]",
@@ -573,11 +582,12 @@ public function uploadSubjects(Request $request){
                 'lecturer_id' => $lecture->lecturer->id,
                 'period_id' => $lecture->period->id,
                 'master_table_id' => $lecture->masterTable->id,
+                'last_week' => $last_attendance != null ? $last_attendance->week_no : null,
             ]);
         }
 
         return response()->json([
-            'data'=>$lecturerResult,
+            'data' => $lecturerResult,
             'message' => 'تم جلب البيانات بنجاح',
             'status_code' => 200
         ]);
@@ -602,7 +612,8 @@ public function uploadSubjects(Request $request){
             ]);
         }
     }
-    public function updatePeriod(Request $request){
+    public function updatePeriod(Request $request)
+    {
 
         $period  = Period::findOrFail($request->id);
 
@@ -618,7 +629,6 @@ public function uploadSubjects(Request $request){
                 'status_code' => 404
             ]);
         }
-
     }
     public function getPeriods()
     {
@@ -657,92 +667,104 @@ public function uploadSubjects(Request $request){
         }
     }
 
+    public function uploadPeriods(Request $request)
+    {
 
-// ========================= Majors =========================================
-
-public function uploadMajors(Request $request){
-
-    if($request->has('file') ) {
-        Excel::import(new MajorsImport , $request->file,'local', \Maatwebsite\Excel\Excel::XLSX);
-    }
-    return response()->json([
-        'message' => 'تم حفظ البيانات بنجاح',
-        'status_code' => 200
-    ]);
-}
-public function addMajor(Request $request)
-{
-    $major = Major::where('major', $request->major)->first();
-    if (!$major) {
-        $data = request()->all();
-        $response = Major::create($data);
+        if ($request->has('file')) {
+            Excel::import(new PeriodsImport, $request->file, 'local', \Maatwebsite\Excel\Excel::XLSX);
+        }
         return response()->json([
-            'data' => $response,
-            'message' => 'تم إضافة التخصص بنجاح',
+            'message' => 'تم حفظ البيانات بنجاح',
             'status_code' => 200
         ]);
-    } else {
-        return response()->json([
-            'message' => 'التخصص موجودة مسبقاً',
-            'status_code' => 404
-        ]);
-    }
-}
-public function updateMajor(Request $request){
-
-    $major  = Major::findOrFail($request->id);
-
-    if ($major) {
-        $major->fill($request->all())->save();
-        return response()->json([
-            'message' => 'تم تحديث بيانات التخصص بنجاح',
-            'status_code' => 201
-        ]);
-    } else {
-        return response()->json([
-            'message' => 'التخصص غير موجود',
-            'status_code' => 404
-        ]);
     }
 
-}
-public function getMajors()
-{
-    $periodResult = [];
+    // ========================= Majors =========================================
 
-    $majors = Major::all();
-    foreach ($majors as $major) {
-        array_push($periodResult, [
-            'id' => $major->id,
-            'major' => $major->major,
-            'levels' => $major->levels,
-        ]);
-    }
+    public function uploadMajors(Request $request)
+    {
 
-    return response()->json([
-        'data' => $periodResult,
-        'message' => 'تم جلب البيانات بنجاح',
-        'status_code' => 200
-    ]);
-}
-public function deleteMajor($major_id)
-{
-    $data = Major::where('id', $major_id)->delete();
-
-    if ($data == 1) {
+        if ($request->has('file')) {
+            Excel::import(new MajorsImport, $request->file, 'local', \Maatwebsite\Excel\Excel::XLSX);
+        }
         return response()->json([
-            'message' => 'تم حذف الفترة بنجاح',
+            'message' => 'تم حفظ البيانات بنجاح',
             'status_code' => 200
         ]);
-    } else {
+    }
+    public function addMajor(Request $request)
+    {
+        $major = Major::where('major', $request->major)->first();
+        if (!$major) {
+            $data = request()->all();
+            $response = Major::create($data);
+            return response()->json([
+                'data' => $response,
+                'message' => 'تم إضافة التخصص بنجاح',
+                'status_code' => 200
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'التخصص موجودة مسبقاً',
+                'status_code' => 404
+            ]);
+        }
+    }
+    public function updateMajor(Request $request)
+    {
+
+        $major  = Major::findOrFail($request->id);
+
+        if ($major) {
+            $major->fill($request->all())->save();
+            return response()->json([
+                'message' => 'تم تحديث بيانات التخصص بنجاح',
+                'status_code' => 201
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'التخصص غير موجود',
+                'status_code' => 404
+            ]);
+        }
+    }
+    public function getMajors()
+    {
+        $periodResult = [];
+
+        $majors = Major::all();
+        foreach ($majors as $major) {
+            array_push($periodResult, [
+                'id' => $major->id,
+                'major' => $major->major,
+                'levels' => $major->levels,
+            ]);
+        }
+
         return response()->json([
-            'message' => 'الفترة غير موجودة',
-            'status_code' => 404
+            'data' => $periodResult,
+            'message' => 'تم جلب البيانات بنجاح',
+            'status_code' => 200
         ]);
     }
-}
+    public function deleteMajor($major_id)
+    {
+        $data = Major::where('id', $major_id)->delete();
 
-// ========================= //Majors =========================================
+        if ($data == 1) {
+            return response()->json([
+                'message' => 'تم حذف الفترة بنجاح',
+                'status_code' => 200
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'الفترة غير موجودة',
+                'status_code' => 404
+            ]);
+        }
+    }
+
+    // ========================= //Majors =========================================
 
     public function updateLecture(Request $request)
     {
@@ -825,10 +847,5 @@ public function deleteMajor($major_id)
                 'status_code' => 404
             ]);
         }
-
-
-
     }
-
-
 }
