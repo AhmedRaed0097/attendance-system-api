@@ -9,7 +9,7 @@ use Maatwebsite\Excel\Concerns\ToArray;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class PeriodsImport implements ToModel
+class PeriodsImport implements ToModel,WithHeadingRow
 {
     use Importable;
 
@@ -34,5 +34,4 @@ class PeriodsImport implements ToModel
     {
         return 1;
     }
-}
 }
