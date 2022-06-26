@@ -141,6 +141,10 @@ Route::get('lecture/{id}', [AttendanceController::class, 'getLectureById']);
 
 Route::post('add-period', [AttendanceController::class, 'addPeriod']);
 
+
+Route::post('import-periods', [AttendanceController::class, 'uploadPeriods']);
+
+
 // TODO::
 Route::post('update-period', [AttendanceController::class, 'updatePeriod']);
 
