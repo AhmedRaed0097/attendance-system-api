@@ -20,7 +20,8 @@ class Attendance extends Model
     ];
 
     protected $hidden = [
-        'updated_at'
+        'updated_at',
+        'created_at'
     ];
 
     public function lecture()
