@@ -278,3 +278,18 @@ Route::get('students-list-manual-attendance/{lecture_id}/{week_no}', [LecturerCo
 
 
 //    |||||||||||||| =====================   // LECTURER OPERATIONS   ========================  ||||||||||||||
+
+// ===================== GET ONLY LECTURES THAT HAV ATTENDANCE   =========================
+
+
+
+Route::get('report/lectures', [AttendanceController::class, 'getLecturesForReport']);
+
+// ===================================================================================
+
+// ===================== GET DATA FOR REPORT   =========================
+
+Route::get('get-report/{lecture_id}/{week_no}', [AttendanceController::class, 'getReport']);
+
+
+// ===================================================================================
