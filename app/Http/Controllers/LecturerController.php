@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Lecture;
 use App\Models\Student;
 use App\Models\Attendance;
+
 class LecturerController extends Controller
 {
     // For Lecturer Lectures Dropdown
@@ -66,6 +68,13 @@ class LecturerController extends Controller
                     'week_no' => $week_no
                 ]);
             }
+            return response()->json([
+                'students' => $students,
+                'lecture_id' => $lecture_id,
+                'week_no' => $week_no,
+                'message' => "تم إنشاء جدول التحضير بنجاح",
+                'status_code' => 200
+            ]);
         } else {
 
             return response()->json([
@@ -75,11 +84,6 @@ class LecturerController extends Controller
 
             ]);
         }
-
-        return response()->json([
-            'message' => "تم إنشاء جدول التحضير بنجاح",
-            'status_code' => 200
-        ]);
     }
 
     // ON UNDO GENERTE QR CODE
