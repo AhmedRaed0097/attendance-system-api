@@ -92,9 +92,6 @@ class AttendanceController extends Controller
         ]);
     }
 
-
-
-
     public function getLectureById(Request $request)
     {
         $subject = Lecture::find($request->id)->subject;
@@ -781,7 +778,7 @@ class AttendanceController extends Controller
         return response()->json([
             'lecture_data' => $lecture,
             'message' => 'تم تحديث بيانات المحاضرة بنجاح',
-            'status_code' => 204
+            'status_code' => 201
         ]);
     }
 
@@ -818,6 +815,7 @@ class AttendanceController extends Controller
             array_push($lecturerResult, [
                 'id' => $lecturer->id,
                 'name' => $lecturer->name,
+                'email' => $lecturer->email,
                 'state' => $lecturer->state,
             ]);
         }
@@ -844,6 +842,86 @@ class AttendanceController extends Controller
         } else {
             return response()->json([
                 'message' => 'المحاضر غير موجود',
+                'status_code' => 404
+            ]);
+        }
+    }
+
+    public function getReport(Request $request)
+    {
+        $students_attenance_data = [];
+        $report_data = [];
+        if ($request->week_no == 0) {
+            $attendances = Attendance::all()->where(
+                'lecture_id',
+                $request->lecture_id
+            );
+        } else {
+            $attendances = Attendance::where(
+                'lecture_id',
+                $request->lecture_id
+            )->where('week_no', $request->week_no)->get();
+        }
+
+        $students = Student::where('master_table_id',  $attendances[0]->lecture->master_table_id)->get();
+
+        array_push($report_data, [
+            'title' =>  $attendances[0]->lecture->MasterTable->title,
+            'major' => $attendances[0]->lecture->MasterTable->major,
+            'level' => $attendances[0]->lecture->MasterTable->level,
+            'batch_type' => $attendances[0]->lecture->MasterTable->batch_type,
+            'subject_name' => $attendances[0]->lecture->subject->subject_name
+        ]);
+
+
+
+        foreach ($students as $student) {
+            $student_attendances = $attendances->where('student_id', $student->id);
+            $attend_states = [];
+            foreach ($student_attendances as $attend) {
+                array_push($attend_states,  $attend->state);
+            }
+            array_push($students_attenance_data,  [
+                'student_id' => $student->id,
+                'name' => $student->name,
+                'attend_states' => $attend_states
+            ]);
+        }
+        $response = [
+            'report_data' => $report_data[0],
+            'students_attenance_data' => $students_attenance_data
+        ];
+        return response()->json([
+            'data' => $response,
+            'message' => 'تم جلب البيانات بنجاح',
+            'status_code' => 200
+        ]);
+    }
+    // TO GET ALL LECTURES THAT HAVE ATTENDANCE
+    public function getLecturesForReport()
+    {
+        $lecture_with_attendance = Lecture::has('attendance')->get();
+
+        if ($lecture_with_attendance->count() > 0) {
+
+            $lecturerResult = [];
+
+            foreach ($lecture_with_attendance as $lecture) {
+                $last_week = Attendance::all()->where('lecture_id', $lecture->id)->last()->week_no;
+                array_push($lecturerResult, [
+                    'lecture_id' => $lecture->id,
+                    'lecture_title' => " [يوم {$lecture->period->day}] [المادة {$lecture->subject->subject_name}] [الفترة {$lecture->period->from} - {$lecture->period->to}]",
+                    'last_week' => $last_week,
+                ]);
+            }
+            return response()->json([
+                'data' => $lecturerResult,
+                'message' => 'تم جلب البيانات بنجاح',
+                'status_code' => 200
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'لايوجد اي سجل تحضير',
                 'status_code' => 404
             ]);
         }
