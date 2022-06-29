@@ -851,7 +851,7 @@ class AttendanceController extends Controller
     {
         $students_attenance_data = [];
         $report_data = [];
-        if ($request->week_no == 0) {
+        if ($request->week_no == -1) {
             $attendances = Attendance::all()->where(
                 'lecture_id',
                 $request->lecture_id
@@ -879,7 +879,11 @@ class AttendanceController extends Controller
             $student_attendances = $attendances->where('student_id', $student->id);
             $attend_states = [];
             foreach ($student_attendances as $attend) {
-                array_push($attend_states,  $attend->state);
+                if ($attend->state == 0) {
+                    array_push($attend_states,  'غائب');
+                } else {
+                    array_push($attend_states,  'حاضر');
+                }
             }
             array_push($students_attenance_data,  [
                 'student_id' => $student->id,
