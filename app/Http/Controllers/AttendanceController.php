@@ -563,31 +563,37 @@ class AttendanceController extends Controller
         $lectures = Lecture::all();
 
 
+        if ($lectures->count() > 0) {
+            // $tables = MasterTable::all();
+            foreach ($lectures as $lecture) {
 
-        // $tables = MasterTable::all();
-        foreach ($lectures as $lecture) {
+                $last_attendance = null;
 
-            $last_attendance = null;
-
-            $last_attendance = Attendance::all()->where('lecture_id', $lecture->id)->last();
+                $last_attendance = Attendance::all()->where('lecture_id', $lecture->id)->last();
 
 
-            array_push($lecturerResult, [
-                'id' => $lecture->id,
-                'lecture_title' => " [يوم {$lecture->period->day}] [المادة {$lecture->subject->subject_name}] [الفترة {$lecture->period->from} - {$lecture->period->to}]",
-                'subject_id' => $lecture->subject->id,
-                'lecturer_id' => $lecture->lecturer->id,
-                'period_id' => $lecture->period->id,
-                'master_table_id' => $lecture->masterTable->id,
-                'last_week' => $last_attendance != null ? $last_attendance->week_no : null,
+                array_push($lecturerResult, [
+                    'id' => $lecture->id,
+                    'lecture_title' => " [يوم {$lecture->period->day}] [المادة {$lecture->subject->subject_name}] [الفترة {$lecture->period->from} - {$lecture->period->to}]",
+                    'subject_id' => $lecture->subject->id,
+                    'lecturer_id' => $lecture->lecturer->id,
+                    'period_id' => $lecture->period->id,
+                    'master_table_id' => $lecture->masterTable->id,
+                    'last_week' => $last_attendance != null ? $last_attendance->week_no : null,
+                ]);
+            }
+
+            return response()->json([
+                'data' => $lecturerResult,
+                'message' => 'تم جلب البيانات بنجاح',
+                'status_code' => 200
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'لايوجد محاضرات',
+                'status_code' => 200
             ]);
         }
-
-        return response()->json([
-            'data' => $lecturerResult,
-            'message' => 'تم جلب البيانات بنجاح',
-            'status_code' => 200
-        ]);
     }
 
     public function addPeriod(Request $request)
