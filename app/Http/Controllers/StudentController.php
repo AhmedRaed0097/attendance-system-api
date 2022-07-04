@@ -99,7 +99,7 @@ class StudentController extends Controller
         } else {
             return response()->json([
                 'attendance_data' => $attend,
-                'message' => 'تسجيل الحضور مسبقاً في هذه المحاضرة',
+                'message' => 'تم تسجيل الحضور مسبقاً في هذه المحاضرة',
                 'status_code' => 409
             ]);
         }
