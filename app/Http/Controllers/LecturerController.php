@@ -12,9 +12,9 @@ class LecturerController extends Controller
     public function getLecturerLectures($lecturer_id)
     {
         $lecturerLectureList = [];
-        $lectures_list = Lecture::all()->where('lecturer_id', $lecturer_id);
+        $lectures_list = Lecture::where('lecturer_id', $lecturer_id)->get();
         foreach ($lectures_list as $lecture) {
-            $att = Attendance::all()->where('lecture_id', $lecture->id)->last();
+            $att = Attendance::latest()->where('lecture_id', $lecture->id)->first();
 
             $rr["Lecture" . $lecture->id] = [
                 "lecture_id" => $lecture->id,
@@ -111,7 +111,7 @@ class LecturerController extends Controller
         $student_data_list = [];
         $data = [];
 
-        $attendRecords = Attendance::all()->where('lecture_id', $lecture_id)->where('week_no', $week_no);
+        $attendRecords = Attendance::where('lecture_id', $lecture_id)->where('week_no', $week_no)->get();
         array_push($attendance_data_list, [
 
             'attendance_date' => $attendRecords->first()->created_at,

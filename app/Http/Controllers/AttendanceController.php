@@ -520,7 +520,7 @@ class AttendanceController extends Controller
 
     public function tableLectures($table_id)
     {
-        $lectures = Lecture::all()->where('master_table_id', $table_id);
+        $lectures = Lecture::where('master_table_id', $table_id)->get();
 
 
         foreach ($lectures as $lecture) {
@@ -569,7 +569,7 @@ class AttendanceController extends Controller
 
                 $last_attendance = null;
 
-                $last_attendance = Attendance::all()->where('lecture_id', $lecture->id)->last();
+                $last_attendance = Attendance::latest()->where('lecture_id', $lecture->id)->first();;
 
 
                 array_push($lecturerResult, [
@@ -858,10 +858,10 @@ class AttendanceController extends Controller
         $students_attenance_data = [];
         $report_data = [];
         if ($request->week_no == -1) {
-            $attendances = Attendance::all()->where(
+            $attendances = Attendance::where(
                 'lecture_id',
                 $request->lecture_id
-            );
+            )->get();
         } else {
             $attendances = Attendance::where(
                 'lecture_id',
@@ -917,7 +917,7 @@ class AttendanceController extends Controller
             $lecturerResult = [];
 
             foreach ($lecture_with_attendance as $lecture) {
-                $last_week = Attendance::all()->where('lecture_id', $lecture->id)->last()->week_no;
+                $last_week =Attendance::latest()->where('lecture_id', $lecture->id)->first()->week_no;
                 array_push($lecturerResult, [
                     'lecture_id' => $lecture->id,
                     'lecture_title' => " [يوم {$lecture->period->day}] [المادة {$lecture->subject->subject_name}] [الفترة {$lecture->period->from} - {$lecture->period->to}]",
